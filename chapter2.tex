@@ -1,0 +1,82 @@
+\chapter{Overview Of Constrained Pressure Residual}
+
+The equations describing fluid flow in porous media are coupled nonlinear PDEs that can be written in descritized
+residual form as follows\supercite{opmflow}:
+\begin{equation}
+	R_{\alpha,i} = \frac{\phi_{i}V_{i}}{\Delta t} (A_{\alpha,i} - A^{0}_{\alpha,i}) + \sum_{j\in C(i)} u_{\alpha,ij} + q_{\alpha,i} = 0
+	\label{res_bal}
+\end{equation}
+
+The subscripts, $\alpha$ and $i, j$, refers to phase and gridblock respectively. The terms that 
+constitute the residual are the acumulation term, $A$, the flux term, $u$, and the source or sink term,
+$q$. These terms are functions of the primary variables. The \textit{primary variables} differ based on 
+selected formulation of the flow phenomena. A usual selection, refered to as the \textit{natural variables}, is
+$p$, $S_{o}$, $S_{g}$ and $x_{c}$ or $y_{c}$ (component $c$ mole fraction in oil or gas phase). Based on \textit{Gibbs phase rule}, 
+only $n_{c}$ (number of components variables) are needed to describe the physical system\supercite{cao}. The equations and variables selected
+in the solution are refered to as the \textit{primary} equations and variables, the others are refered to as \textit{secondary} equations and variables. 
+
+The efficiency of the linear solver depends on the nature of variables. For hyperbolic systems the \textit{ILU} and \textit{Gauss-Seidel} works well, for
+elliptic systems the \textit{AMG} is more efficent. Since the equations of reservoir simulation are of mixed character, near-hyperbolic in saturation and
+near-elliptic in pressure, a decoupling technique must be deviced to precondition each subsystem accordingly. The decoupling technique that solves a pressure
+subsystem first and then combines the pressure guess in the residual with the remaining near-hyperbolic variables is refered to as \textit{Constrained Pressure Residual} preconditioner.
+
+\section{The Nonlinear Equations Of Reservoir Simulation}
+
+Equation \ref{res_bal}, is refered to as a phase balance (component balance if a compositional formulation is used) relation . It is supplamented by
+additional constraints equations to complete the system of equations (ensure number of varialbes is equal to number of equations). These constraint
+equations can be, $\sum_{\alpha}S_{\alpha} = 1$, where  $S_{\alpha}$ is saturatoin of phase $\alpha$, or $f_{\alpha,i} = f_{\beta,i}$, where $f_{\alpha,i}$
+is the fugacity of component $i$ in phase $\alpha$ (for compositional formulations). 
+
+\section{Newton's Method As A Nonlinear Solver}
+The standard method to solve the discretized form of the nonlinear PDEs is the Newton-Raphson method. This method 
+will converge, provided the derivative of the function is not equal to zero at the initial guess, in at least
+a quadratic rate. The Method can be written for a system of equations as follows:
+\begin{equation}
+J_{R}(\mathbf{x_{n}})(\mathbf{x_{n+1} - x_{n}}) = -F(\mathbf{x_{n}})
+\end{equation}
+
+\subsection{The Jacobian Matrix}
+
+\begin{equation}
+\begin{pNiceArray}{cccccc}
+
+\begin{blockarray}{cccc}
+a & b & c  \\
+\begin{block}{(ccc)c}
+  1 & 1 & 1 & f \\
+  0 & 1 & 0 & g \\
+  0 & 0 & 1 & h \\
+\end{block}
+\end{blockarray}&&& \mbox{\Huge \textbf{$0$}}
+
+\\
+ & \ddots\\
+ &  & 
+\begin{blockarray}{cccc}
+a & b & c  \\
+\begin{block}{(ccc)c}
+  1 & 1 & 1 & f \\
+  0 & 1 & 0 & g \\
+  0 & 0 & 1 & h \\
+\end{block}
+\end{blockarray} 
+ \\
+	&  & &  \ddots\\
+	&&&&
+\begin{blockarray}{cccc}
+a & b & c  \\
+\begin{block}{(ccc)c}
+  1 & 1 & 1 & f \\
+  0 & 1 & 0 & g \\
+  0 & 0 & 1 & h \\
+\end{block}
+\end{blockarray}
+
+\end{pNiceArray}
+\end{equation}
+
+\section{Decoupling Techniques}
+
+\subsection{Quasi-Implicit Pressure Explicit Saturation (QIMPES)}
+
+\subsection{Alternate Block Factorization (ABF)}

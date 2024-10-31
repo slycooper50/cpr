@@ -1,0 +1,39 @@
+%% These three lines  !!!
+\SetNlSty{textbf}{\color{black}}{}
+\newcommand*{\mycommentfont}[1]{\textcolor{black}{\ttfamily#1}}
+\SetCommentSty{mycommentfont}
+
+\section{CPR Algorithm}
+
+%{\raggedright
+%\begin{minipage}{.7\linewidth}
+\begin{algorithm}[H]
+    \caption{Eclipse Implementation Of CPR\cite{ecl_tech}.}
+    \label{cpr_ecl}
+    \DontPrintSemicolon
+    \KwIn{Jacobian matrix: $\mathbf{A}$ and Nonlinear Residual: $\mathbf{R}$.}
+    \KwOut{CPR preconditioned vector: $\mathbf{x}$, for the \texttt{FGMRES}.}
+    \SetKwProg{Fn}{Function}{ is}{end}
+	\While{\texttt{FGMRES \textcolor{red}{is not convergent}}}{
+	\Fn{\texttt{CPR\_PRECOND}\texttt{(A, R)}} {
+        \begingroup
+        \color{red}
+	    \textcolor{blue}{\ttfamily{\slash/ First Stage Preconditioner}}\\
+	    $\mathbf{r_{p} = C^{T}GR}$ \hspace{1cm}\tcp{Restric the residual to the prssure system.}
+	    $\mathbf{\mathbf{A_{p} x_{p}} = \mathbf{r_{p}}}$ \hspace{0cm}\tcp{Solve using \texttt{GMRES} with Nested-Factorization.}
+	    \textcolor{black}{\texttt{call GMRES}} \hspace{2cm}$\textcolor{black}{\longleftarrow}$ \textcolor{NavyBlue}{\texttt{inner GMRES}}
+            \hfill\\
+	    \textcolor{blue}{\ttfamily{\slash/ Second Stage Preconditioner}}\\
+	    $\mathbf{\tilde{r} = r - \mathbf{A}C\mathbf{x_{p}}}$ \hspace{0.35cm}\tcp{Expand residual by padding the other variables.}
+	    $\mathbf{\tilde{x} = \tilde{M^{-1}} \tilde{r}}$ \hspace{0.9cm}\tcp{Preform Nested-Factorization on the expanded}\hspace{2.7cm}\tcp{residual.}
+            \hfill\\
+	    \textcolor{blue}{\ttfamily{\slash/ Combine Results}}\\
+	    $\mathbf{\mathbf{x = \tilde{x} + C x_{p}}}$ \hspace{0.25cm}\tcp{Combine the results of the two stages.}
+        \endgroup            
+    }
+    \texttt{call }\texttt{FGMRES(x)}\hspace{2cm}$\longleftarrow$ \textcolor{NavyBlue}{\texttt{outer GMRES}}
+}
+\end{algorithm}
+%\end{minipage}
+%\par
+%}

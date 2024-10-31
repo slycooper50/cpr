@@ -1,0 +1,25 @@
+% From mitthesis package
+% Version: 1.04, 2023/10/19
+% Documentation: https://ctan.org/pkg/mitthesis
+\chapter{Introduction}
+The inner components of reservoir simulators are more or less universal. Each simulator has to support a 
+gridding infrastructure to support discretization of the simulation domain, a nonlinear solver (usually based on Newton's Method) to 
+solve the nonlinear coupled PDEs of fluid flow, a linear solver that will solve the matrix produced by the nonlinear solver, a timestepping
+mechanism guided by some convergence criteria of the nonlinear solver and an I/O system to generate results requested by the user for post-processing.
+
+A crucial advantage of simulation tools over classical engineering analysis practices is the ability
+to perform a large number of calculations in an efficient way. In reservoir simulation, the most taxing
+component of runing a simulator is usually the linear solver. Therefore, research in developing efficient
+techniques in solving large system of equations is ample in the reservoir simulation literature. The main
+focus is usually on developing scalable preconditioners that can be combined with iterative Krylov-based 
+iterators. The industry standard preconditioner is the Constrained Pressure Residual. This preconditioner
+has its roots in the works of Wallis\supercite{Wallis_1983,Wallis_1985}, the essential idea relies on decoupling
+the resulting system of linear equations by isolating the elliptic dominant part of the system (pressure) from 
+the hyperbolic (saturation or concentration) part of the system. 
+
+The convergance of a Krylov iterative solver depends essentially on the preconditioner. The prototypical Krylov method, the
+Conjugate Gradient can handle Symmetric-Positive-Definite matrices. For reservoir simulation cases, where matrices are ill-conditioned and
+not symmetric, the Generalized Minimum Residual \textit{GMRES}, is used\supercite{roy}. 
+
+
+
