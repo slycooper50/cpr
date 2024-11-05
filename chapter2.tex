@@ -26,6 +26,67 @@ Equation \ref{res_bal}, is refered to as a phase balance (component balance if a
 additional constraints equations to complete the system of equations (ensure number of varialbes is equal to number of equations). These constraint
 equations can be, $\sum_{\alpha}S_{\alpha} = 1$, where  $S_{\alpha}$ is saturatoin of phase $\alpha$, or $f_{\alpha,i} = f_{\beta,i}$, where $f_{\alpha,i}$
 is the fugacity of component $i$ in phase $\alpha$ (for compositional formulations). 
+The general form of the nonlinear equations of reservoir simulation can be expressed as\supercite{roy}:
+\begin{equation}
+	\frac{\partial\mathbf{M}}{\partial t} = \nabla \cdot \mathbf{F} + \mathbf{Q}
+	\label{nonlineq}
+\end{equation}
+Where the vector field $\mathbf{M}$ represents mass of the system, $\mathbf{F}$ represents cross flow contributions and $\mathbf{Q}$ represents source/sink terms.
+In its continuous form the equation \ref{nonlineq} with its vector components of each variable, $\mathbf{M}$, $\mathbf{F}$ and $\mathbf{Q}$ can be representing a mass balance 
+for each hydrocarbon component plus water, while the other vectors will be flow contribution (Darcy's law substitution) of each component plus water and $\mathbf{Q}$ 
+vector components are source/sink terms of each component plus water. Hence, the length of each vector field is $N_{c} + 1$. Where, $N_{c}$ is the number of hydrocarbon components.
+A detailed description of different physical models to simulate fluid flow in porous media can be found in many resources in the literature, a good starting point is \cite{cao,aziz}.
+Possible values for these vector fields are given below:
+
+\begin{equation}
+	\mathbf{M} = 
+\begin{pmatrix}
+	\phi\sum_{p=1}^{N_{p}}\rho_{p}S_{p}x_{1,p} \\
+	\phi\sum_{p=1}^{N_{p}}\rho_{p}S_{p}x_{2,p} \\
+	\vdots\\
+	\phi\sum_{p=1}^{N_{p}}\rho_{p}S_{p}x_{i,p} \\
+	\vdots\\
+	\phi\sum_{p=1}^{N_{p}}\rho_{p}S_{p}x_{N_{c}+1,p} 
+\end{pmatrix}
+,\mathbf{F} = 
+\begin{pmatrix}
+	\sum_{p=1}^{N_{p}}\rho_{p}x_{1,p}\frac{kk_{rp}}{\mu_{p}}(\nabla p_{p}-\rho_{p}g\nabla d)\\
+	\sum_{p=1}^{N_{p}}\rho_{p}x_{2,p}\frac{kk_{rp}}{\mu_{p}}(\nabla p_{p}-\rho_{p}g\nabla d)\\
+	\vdots\\
+	\sum_{p=1}^{N_{p}}\rho_{p}x_{i,p}\frac{kk_{rp}}{\mu_{p}}(\nabla p_{p}-\rho_{p}g\nabla d)\\
+	\vdots\\
+	\sum_{p=1}^{N_{p}}\rho_{p}x_{N_{c} + 1,p}\frac{kk_{rp}}{\mu_{p}}(\nabla p_{p}-\rho_{p}g\nabla d)\\
+\end{pmatrix}
+,\mathbf{Q} = 
+\begin{pmatrix}
+	Q_{1}\\
+	Q_{2}\\
+	\vdots\\
+	Q_{i}\\
+	\vdots\\
+	Q_{N_{c}+1}
+\end{pmatrix}
+\end{equation}
+The dependant variables in this system of PDEs can also be assigned differently based on the model selected. However, one possible selection which usually refered to as natural variables selection\supercite{cao} is: 
+pressure $p$, saturations $S_{p}$ and mole fractions $x_{i}$. From a thermodynamic point of view, the Gibbs phase rule fixes the number variables needed to describe the physical system. This number is $N_{c} + 1$, that is
+number of hydrocarbon components plus one\supercite{cao}. Moreover, further constitutive relations must be satisfied in cases where multiple phases are present or capillary pressure and fugacities must be accounted for in
+compositional models. These equations are refered to as secondary equations, since their variables depend on the primary variables selected in the $N_{c} + 1$ system. Some of these secondary equations can be written as follows:
+
+\begin{equation}
+	R_{cap} = P_{c,ow} - (p_{o} - p_{w}) = 0
+\end{equation}
+
+\begin{equation}
+	R_{fug} = f_{i,o} - f_{i,g} = 0
+\end{equation}
+
+\begin{equation}
+	R_{sat} = \sum_{p=1}^{N_{p}}S_{p} - 1 = 0
+\end{equation}
+
+\begin{equation}
+	R_{frac} = \sum_{i=1}^{N_{c}}x_{i} - 1 = 0
+\end{equation}
 
 \section{Newton's Method As A Nonlinear Solver}
 The standard method to solve the discretized form of the nonlinear PDEs is the Newton-Raphson method. This method 
@@ -33,6 +94,25 @@ will converge, provided the derivative of the function is not equal to zero at t
 a quadratic rate. The Method can be written for a system of equations as follows:
 \begin{equation}
 J_{R}(\mathbf{x_{n}})(\mathbf{x_{n+1} - x_{n}}) = -F(\mathbf{x_{n}})
+\end{equation}
+
+\begin{equation}
+	Ax = 
+\begin{bmatrix}
+	A_{pp} & A_{ps}\\
+	A_{sp} & A_{ss}
+\end{bmatrix}
+\begin{bmatrix}
+	x_{p} \\
+	x_{s}
+\end{bmatrix}
+=
+\begin{bmatrix}
+	b_{p} \\
+	b_{s}
+\end{bmatrix}
+=
+b
 \end{equation}
 
 \subsection{The Jacobian Matrix}
@@ -76,7 +156,35 @@ a & b & c  \\
 \end{equation}
 
 \section{Decoupling Techniques}
+The CPR procedure can be summarized by the following two steps:
+\begin{itemize}
+	\item Extract a pressure subsystem by a decoupling operator.
+	\item Precondition the original system after modifying the pressure guess from the first step.
+\end{itemize}
+The decoupling process is an essential step in reducing the coupling between the pressure and the other variables.
+The effectiveness of the preconditioner will vary based on the decoupling technique used. Therefore, in the research
+literature on CPR preconditioner, there are a variety of decoupling techniques that each will result in a different pressure
+subsystem and therefore different solution times. Preconditioners that results from the application of two linear operators
+$P_{1}^{-1}$ and $P_{2}^{-1}$ are refered to as two-stage preconditioners. In general, if matrix $A$ is the original jacobian
+matrix of the system, a two stage preconditioner can be written as:
+\begin{equation}
+	P^{-1} = P_{2}^{-1}(I-AP_{1}^{-1}) + P_{1}^{-1}
+\end{equation}
+In particular, the CPR preconditioner can be written as:
+\begin{equation}
+	M_{CPR}^{-1} = M^{-1}(I - AC(W^{T}AC)^{-1}W^{T}) + C(W^{T}AC)^{-1}W^{T}
+\end{equation}
+
 
 \subsection{Quasi-Implicit Pressure Explicit Saturation (QIMPES)}
 
 \subsection{Alternate Block Factorization (ABF)}
+This method was introduced firstly in the semi-conductors simulation industry in 1989\supercite{Bank1989}. Like other decoupling strategies the
+Alternate Block Factorization goal is to reduce the coupling between variables in the system. The researchers differentiates between two kinds
+of coupling. The first is refered to as \textit{intra-grid}, the other is \textit{intra-equation}. The intra-grid is the coupling between 
+variables that results from the discretization of differential equations being solved on a spatial domain with a definite grid connectivity.
+The intra-equation, is the coupling between variables that results from the physics of the coupled system of PDEs.
+The stronger the coupling between variables the more efficient decoupling techniques will be on solving the problem than other methods.
+The first to apply the ABF method in reservoir simulation is Klie, et al\supercite{klie}, in their investigations of two-stage preconditioners. 
+In the original paper of ABF decoupling technique, the authors assume a system of $m$ coupld PDEs in a mesh of size $\nu$.
+
