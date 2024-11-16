@@ -174,7 +174,53 @@ In particular, the CPR preconditioner can be written as:
 \begin{equation}
 	M_{CPR}^{-1} = M^{-1}(I - AC(W^{T}AC)^{-1}W^{T}) + C(W^{T}AC)^{-1}W^{T}
 \end{equation}
+The decoupling techniques for CPR are summarized in table \ref{dectec} and expounded in below sections.
 
+\begin{table}[htb]
+\caption{List of pressure decoupling operators used in CPR algorithm.}
+\label{dectec}
+    \footnotesize
+    \setlength\tabcolsep{3pt}
+\begin{tabularx}{\linewidth}{c||l||c}
+    \toprule
+\thead[l]{Name}
+    &   \thead{Primary \\Operator}
+        &   \thead{Secondary \\Operator}\\
+    \midrule
+\texttt{Exact}  & $G = \begin{bmatrix} I &  -A_{ps}A_{ss}^{-1}\\0 & I \end{bmatrix}$\\
+    \addlinespace
+\texttt{Alternate Block Factorization (ABF)}  & $G^{-1} = \begin{bmatrix} diag(A_{pp}) &  diag(A_{ps})\\ diag(A_{sp}) & diag(A_{ss}) \end{bmatrix}$\\
+    \addlinespace
+\texttt{Quasi-IMPES (QI)} & $G = \begin{bmatrix} I &  -diag(A_{ps})diag(A_{ss})^{-1}\\ 0 & I \end{bmatrix}$\\
+    \addlinespace
+\texttt{True\_IMPES (TI)} & $G = \begin{bmatrix} I &  -colsum(A_{ps})colsum(A_{ss})^{-1}\\ 0 & I \end{bmatrix}$\\
+    \addlinespace
+	\texttt{Full Row Sum (FRS)} & $G^{point-wise}_{FRS} = \begin{bmatrix} G^{1} & & &\\ & & & \\ & & \ddots & \\ & & & \\ & & & G^{nb}\end{bmatrix}$ & 
+$G^{i} = \begin{bmatrix}
+1 & 1 & 1 & \dots & 1 \\
+ & 1 & 0 & \dots & 0 \\
+ &  & \ddots & \ddots & \vdots \\
+ &  &  & 1 & 0 \\
+ &  &  &  & 1 
+\end{bmatrix} $\\
+    \addlinespace
+	\texttt{Dynamic Row Sum (DRS)} & $G^{point-wise}_{FRS} = \begin{bmatrix} G^{1} & & &\\ & & & \\ & & \ddots & \\ & & & \\ & & & G^{nb}\end{bmatrix}$&
+$G^{i} = \begin{bmatrix}
+	\delta_{1}^{i} &\delta_{2}^{i}&\delta_{3}^{i}& \dots &\delta_{k+1}^{i} \\
+ & 1 & 0 & \dots & 0 \\
+ &  & \ddots & \ddots & \vdots \\
+ &  &  & 1 & 0 \\
+ &  &  &  & 1 
+\end{bmatrix} $\\
+	&&\\
+	&&
+$\delta_{x}^{i} = \begin{cases} 
+0, & \frac{a_{x,1}^{i,i}}{\sum_{j=1,j\neq i}^{nb} |a_{x,1}^{i,j}|} < \epsilon_{d,d} \\  
+1 & 
+     \end{cases} $\\
+    \bottomrule
+\end{tabularx}
+\end{table}
 
 \subsection{Quasi-Implicit Pressure Explicit Saturation (QIMPES)}
 

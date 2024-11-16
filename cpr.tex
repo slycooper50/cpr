@@ -59,6 +59,22 @@
 \usepackage[style=ieee,maxbibnames=10,sorting=none]{biblatex}% style=ext-numeric-comp,articlein=false,giveninits=true
 	\DefineBibliographyStrings{english}{url= \textsc{url} ,  }% replaces default "[Online]. Available" by "URL"
 
+\usepackage{ragged2e}
+\usepackage{booktabs, makecell, tabularx}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{}
+\newcolumntype{L}{>{\RaggedRight}X}
+\usepackage{enumitem}
+\usepackage{etoolbox}
+\AtBeginEnvironment{table}{%
+\setlist[enumerate]{nosep, % <-- list setup used in all tables
+                     topsep = 0pt,
+                     partopsep = 0pt,
+                     wide,
+                     label=\alph*),
+                     before = \vspace{-0.6\baselineskip},
+                     }
+                        }
 
 \addbibresource{cpr.bib}%% <== change to YOUR bib file <= CHANGE
 \nocite{*}
