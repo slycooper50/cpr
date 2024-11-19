@@ -2,10 +2,44 @@
 % Version: 1.04, 2023/10/19
 % Documentation: https://ctan.org/pkg/mitthesis
 \chapter{Introduction}
+The use of models is part of our everyday life. In our modern society, we are sourounded by a myriad of complex systems that are
+essential for the workings of our lifes from transportation, communication and food processing to energy production. Scientis and engineers
+handle complexity by building simplified models that can be further enhanced to increase their ability to describe the complex systems.
+In the petroleum industry, reservoir simulation is a branch of reservoir engineering that aims to develop models of the petroleum systems.
+These models are built using knowledge of geological, geophysical and petrophysical properties of the petroleum reservoir system.
+They are routinely used to describe fluid flow during the phase of field development planning and production, which enable the engineers 
+to develop an optimum field production plan. The importance of reservoir simulation stems from the complexity of the physical systems that reservoir 
+engineers attempt to describe. The use of mathematical models is essential to provide precise and valuable answers to the questions the simulator is 
+set to answer. 
+
+\begin{figure}[htb]
+\centering
+\resizebox{15cm}{!}{\input{tikz/models.tikz}}
+\caption{Models used in a reservoir simulator.}\label{models}
+\end{figure}
+
+There are several physical systems within a petroleum reservoir that a reservoir simulator needs to model. 
+These can include the grid dimensions representing the reservoir and the geological properties of the reservoir such as porosity, 
+permeability and multiphase fluid flow parameters like capillary pressure and relative permeability. A fluid flow model that consists of 
+conservation laws and a constitutive Darcy's law for flow in porous media must also be incorporated as a model to the reservoir simulator.
+Several fluid modeling techniques are used in the industry, the most commonly known are the \textit{Black-oil} and \textit{Compositional} models.
+Moreover, the boundary conditions for the differential equations describing the fluid flow are the wells, both injectors and producers. 
+The wells are also routinely modeled in the simulator using differential equations to describe inflow performance of the wells. One of well models
+main objectives is to relate the reservoir gridblock pressure to the well bottom hole pressure. More sophisticated well models handle cross flow and
+multilateral, horizontal and slanted wells. Reservoir simulators can also include additional models to simulate networks of fractures, surface facilities,
+enhanced oil recovery and geomechanics. The main standard models that a simple reservoir simulator must incorporate are summarized in figure \ref{models}.
+
 The inner components of reservoir simulators are more or less universal. Each simulator has to support a 
 gridding infrastructure to support discretization of the simulation domain, a nonlinear solver (usually based on Newton's Method) to 
 solve the nonlinear coupled PDEs of fluid flow, a linear solver that will solve the matrix produced by the nonlinear solver, a timestepping
 mechanism guided by some convergence criteria of the nonlinear solver and an I/O system to generate results requested by the user for post-processing.
+
+\begin{figure}[htb]
+\raggedright
+\resizebox{15cm}{!}{\input{tikz/simulator.tikz}}
+\caption{Generic Algorithm Of A Reservoir Simulator.}\label{simulator}
+\end{figure}
+
 
 A crucial advantage of simulation tools over classical engineering analysis practices is the ability
 to perform a large number of calculations in an efficient way. In reservoir simulation, the most taxing
@@ -21,5 +55,11 @@ The convergance of a Krylov iterative solver depends essentially on the precondi
 Conjugate Gradient can handle Symmetric-Positive-Definite matrices. For reservoir simulation cases, where matrices are ill-conditioned and
 not symmetric, the Generalized Minimum Residual \textit{GMRES}, is used\supercite{roy}. 
 
+\section{Spatial Discretization}
 
 
+\section{Temporal Discretization}
+
+\section{Nonlinear Equations Solution Method}
+
+\section{Linear System Solution Method}

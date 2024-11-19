@@ -1,0 +1,95 @@
+\begin{tikzpicture} [
+output/.style    = { rectangle, draw=black, thick, 
+    fill=embeddings_color,
+    rounded corners, minimum height=2em },
+post/.style    = { rectangle, draw=black, thick, 
+    fill=emb_color, text width=4em, text centered,
+    rounded corners, minimum height=2em },
+addnorm/.style    = { rectangle, draw=black, thick, 
+    fill=cadmgreen!40, text width=10em, text centered,
+    rounded corners, minimum height=2em },
+four/.style    = { rectangle, draw=black, thick, 
+    fill=fourier_color, text width=10em, text centered,
+    rounded corners, minimum height=4.5em },
+grid/.style    = { rectangle, draw=black, thick, 
+    fill=frenchblue, text width=10em, text centered,
+    rounded corners, minimum height=2em },
+conn/.style    = { rectangle, draw=black, thick, 
+    fill=frenchblue, text width=10em, text centered,
+    rounded corners, minimum height=2em },
+main/.style    = { trapezium, draw=black, thick, 
+    fill=boston!70, text width=10em, text centered,
+    rounded corners, minimum height=2em },
+end/.style    = { trapezium , trapezium angle=-67.5, draw=black, thick, 
+    fill=boston!70, text width=10em, text centered,
+    rounded corners, minimum height=2em },
+input/.style    = { rectangle, draw=black, thick, 
+    fill=frenchblue, text width=10em, text centered,
+    rounded corners, minimum height=2em },
+conv/.style    = { diamond, draw=black, thick, 
+    fill=frenchblue, text centered,
+    rounded corners},
+line/.style     = { draw, thick, <-, shorten >=0pt },
+]
+\definecolor{emb_color}{RGB}{252,224,225}
+\definecolor{embeddings_color}{RGB}{232,204,205}
+\definecolor{cadmgreen}{rgb}{0.0, 0.42, 0.24}
+\definecolor{chocolate}{RGB}{210,105,30}
+\definecolor{alizarin}{rgb}{0.82, 0.1, 0.26}
+\definecolor{airforceblue}{rgb}{0.36, 0.54, 0.66}
+\definecolor{boston}{rgb}{0.8, 0.0, 0.0}
+\definecolor{frenchblue}{rgb}{0.0, 0.45, 0.73}
+\definecolor{fourier_color}{RGB}{252,226,187}
+% Define nodes in a matrix
+\matrix [column sep=1mm, row sep=5mm] {
+    & \node [main] (main) {\textbf{Simulator Main}};         & \\
+    & \node [input] (input) {\textit{Input Parsing}};  & \\
+    & \node [grid] (grid) {\textit{Grid Construction}};                     & \\
+    & \node [conn] (connect) {\textit{Connectivity Graph}};                     & \\\\
+    & \node [addnorm] (res) {\texttt{Compute Residual}};       & \\
+    & \node [addnorm] (jac) {\texttt{Compute Jacobian}};       & \\
+    & \coordinate (null2);                                & \\
+	& \node [four] (cpr) {\texttt{Precondition}};        & \\
+	& \node [four] (krylov) {\texttt{Krylov Iterator}};                & \\
+    & \node [conv] (conv1) {converged};                & \\
+    & \coordinate (null1);                                & \\
+};
+
+\node[below = 1cm of conv1] (output) {Output Of A Timestep};
+\node[conv, below = 1cm of output, line width=0.03cm,draw, rounded corners=0.3cm,] (conv2) {\shortstack{End Of \\\\Simulation \\ \\Time}};
+\node [yshift=0.5cm]at (conv2.west) {No};
+\node [xshift=1cm, yshift=-1.7cm]at (conv2.west) {Yes};
+
+\begin{pgfonlayer}{background}
+    \node[fit=(output),output](post){};
+    \coordinate (N1) at (post.west|-krylov);
+    \coordinate (N2) at (post.east|-krylov);
+    \node[inner xsep=120pt,inner ysep=14pt,fit=(res)(krylov)(N1)(N2)(conv1),fill=airforceblue!40, line width=0.03cm,draw, rounded corners=0.3cm,label={[align=left, xshift=-8.5cm,yshift=-3cm]\textbf{\textit{Time Loop}}}](timeloop){};
+    \node[inner xsep=55pt,inner ysep=8pt,fit=(cpr)(krylov),fill=alizarin!40, line width=0.03cm,draw, rounded corners=0.3cm,label={[align=left,xshift=-5.2cm,yshift=1cm]\textbf{\textit{Newton's}} \\\textit{\textbf{Loop}}}](newton){};
+    \node[inner xsep=2pt,inner ysep=4pt,fit=(cpr)(krylov),fill=chocolate!50, line width=0.03cm,draw, rounded corners=0.3cm,label={[align=left,xshift=-3.2cm,yshift=-2cm]\textit{\textbf{Solver's}} \\\textit{\textbf{Loop}}}](solver){};
+    \node [yshift=0.5cm]at (conv1.east) {No};
+    \node [xshift=0.5cm, yshift=-1cm]at (conv1.west) {Yes};
+\end{pgfonlayer}
+
+\node[end, below= 5mm of conv2](end){\textbf{End}};
+
+% connect all nodes defined above
+\begin{scope} [every path/.style=line]
+\path (input)       --  (main);
+\path (grid)       --  (input);
+\path (connect)       --  (grid);
+\path (timeloop)        --  (connect);
+\path (jac)          --  (res);
+\path (solver)          --  (jac);
+\path (solver.north)+(0,0.2)       --++  (3,0.2) |- (solver.east);
+\path (krylov)     --  (cpr);
+\path (post)  --  (timeloop) coordinate[midway](null1) ;
+\path (timeloop.north)+(0,0.3)  --++  (-7,0.3) -- (-7,-12.65) -| (conv2.west);
+\path  (conv1.north) -- (solver.south);
+\path  (res.east)--++(3,0) |-(conv1.east);
+\path (conv2) -- (post);
+\path (end) -- (conv2);
+\end{scope}
+\path [draw] (timeloop.south)--(conv1);
+
+\end{tikzpicture}

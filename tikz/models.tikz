@@ -1,0 +1,98 @@
+\pgfdeclarelayer{behind}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{behind,background,main,foreground}
+\tikzset{box/.style={draw, rectangle, rounded corners, thick, node 
+ distance=7em, 
+text width=6em, text centered, minimum height=3.5em}}
+\tikzset{every node/.append style={font=\scriptsize}}
+
+%************************************************************
+%************************************************************
+%  Define block styles
+%************************************************************
+%************************************************************
+\tikzset{block/.style={rectangle split, draw, rectangle split parts=2,
+text width=14em, text centered, rounded corners, minimum height=4em},
+grnblock/.style={rectangle, draw, fill=green!20, text width=10em, text 
+centered, rounded corners, minimum height=4em}, 
+whtblock/.style={rectangle, draw, fill=white!20, text width=10em, text 
+centered, minimum height=3em},    
+ylwblock/.style={rectangle, draw, fill=yellow, text width=10em, text 
+centered, minimum height=3em}, 
+line/.style={draw, -{Latex[length=2mm,width=1mm]}},
+cloud/.style={draw, ellipse,fill=white!20, node distance=3cm,minimum height=3em},  
+container1/.style={draw, rectangle,dashed,inner sep=0.28cm, rounded
+corners,fill=green!8,minimum height=2.4cm,minimum width=5.6cm},
+container2/.style={draw, rectangle,dashed,inner sep=0.28cm, rounded
+corners,fill=red!8,minimum height=4.cm,minimum width=6.3cm},
+container3/.style={draw, rectangle,dashed,inner sep=0.28cm, rounded
+corners,fill=gray!15,minimum height=3cm,minimum width=6.3cm},
+arrow/.style={-, thick}
+}
+%************************************************************
+%************************************************************ 
+\begin{tikzpicture}[node distance = 1.20cm, auto]
+%************************************************************
+%************************************************************
+%  Draw nodes
+%************************************************************
+\node [whtblock,font=\fontsize{10}{0}\selectfont] (resgrid) {Reservoir geometrical representation: grid data points.};
+%===============================================    
+%  Constituent elastic parameters
+%===============================================  
+\node [block, below=of resgrid,rectangle split part fill= 
+{orange!20,blue!3},font=\fontsize{10}{0}\selectfont, yshift=1cm] (petro) 
+{\textbf{Petrophysical Parameters}
+\nodepart[text width=3cm]{two} 	$\phi,\ \boldmath{\tensor{K}},\ \Delta x,\ \Delta y,\ \Delta z$\\
+				$P_{c}(S_{w}),\ K_{rw},\ K_{ro},\ K_{rg}$};
+% ****************************************************
+% ****************************************************
+ \node [right=3.9cm of resgrid, yshift=1.2cm] [fill=white,draw,font=\fontsize{12}{0}\selectfont] 
+ (flowmodel) {\textbf{Flow Model}};
+
+ \node [below=2.7cm of resgrid, xshift=4.5cm] [fill=white,draw,font=\fontsize{12}{0}\selectfont] 
+ (wellmodel) {\textbf{Well Model}};
+
+\node [below=of wellmodel, yshift=0cm,block,anchor=center,rectangle split part fill= {orange!20,blue!3},font=\fontsize{10}{0}\selectfont] (welleq) 
+{\textbf{Well Model Equations}
+\nodepart[text width=5cm] 
+{two}$q_{\alpha,i} = J_{i}\lambda_{\alpha,i}(p_{i} - p_{bhp} - H_{wi})$\\
+$J = \frac{\theta K h}{\ln{r_{e}/r_{w}}+S}$\\
+[1em] 
+}; 
+
+\node [below=of flowmodel, yshift=-0.5cm,block,anchor=center,rectangle split part fill= {orange!20,blue!3},font=\fontsize{10}{0}\selectfont] (MatParm) 
+{\textbf{Mathematical Model Of Flow (PDE)}
+\nodepart[text width=5cm] 
+{two}$\partial_{t}(\phi b_{w}S_{w}) + \nabla \cdot (b_{w}\vec{u_{w}}) = b_{w}q_{w}$\\
+$\partial_{t}(\phi b_{o}S_{o}) + \nabla \cdot (b_{o}\vec{u_{o}}) = b_{o}q_{o}$\\
+$\partial_{t}\phi[b_{g}S_{g}+b_{o}R_{s}S_{o}] + \nabla \cdot (b_{g}\vec{u_{g}} + b_{o}R_{s}\vec{u_{o}}) = b_{g}q_{g} + b_{o}R_{s}q_{o}$\\
+[1em] 
+}; 
+
+\begin{pgfonlayer}{background}
+ \coordinate (aux1) at ([yshift=3mm]resgrid.north);
+ \node [container1,fit=(aux1)(petro)] (cont3) 
+ {};
+   \node at (cont3.north) [fill=white,draw,font=\fontsize{12}{0}\selectfont] 
+ {\textbf{Geological Properties}};
+ %-----------------------------------------------------------
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{behind}
+ \coordinate (aux2) at ([yshift=-8mm, xshift=5.3cm]resgrid.east);
+ \node[container2, fit=(aux2)] (cont1) 
+ {};
+\end{pgfonlayer}
+
+\begin{pgfonlayer}{behind}
+ \coordinate (aux2) at ([yshift=-15mm, xshift=-3cm]cont1.south);
+ \node[container3, fit=(aux2), yshift=-0.8cm] (cont2) 
+ {};
+%\draw[color=red] (cont1.south) to (cont2.east);
+\draw[arrow](cont1.south)+(1, 0) -- ++(1,-1) |- (cont2.east);
+\draw[arrow](cont3.south)+(-1, 0) -- ++(-1,-1) |- (cont2.west);
+\draw[arrow](cont3.east)+(0,0.04) -- (cont1.west);
+\end{pgfonlayer}
+\end{tikzpicture}
