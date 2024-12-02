@@ -1,0 +1,301 @@
+% From mitthesis package
+% Version: 1.01, 2023/07/04
+% Documentation: https://ctan.org/pkg/mitthesis
+
+
+\chapter{Code listing}
+
+\lstset{language=[90]Fortran,
+  basicstyle=\tiny\ttfamily,
+  keywordstyle=\color{red},
+  commentstyle=\color{Blue3},
+  morecomment=[l]{!\ }% Comment only with space after !
+  numberstyle=\tiny\color{gray},
+  backgroundcolor=\color{CadetBlue!15!white},   
+  numbers=left,                    
+  numbersep=5pt,                  
+}
+
+\begin{lstlisting}
+    Module CPR_Precond 
+    use modulepetsc
+    use modulecom, only: NCP1, NB
+    use cfuncs
+    USE PETSC
+    USE MODULEFIMF, only: NWSIZE
+    use MODULEPARA, only: NWM, NWBCM
+    use MODULEGENFRAME, only: maxStencil
+#include "petsc/finclude/petsc.h"
+#include "petsc/finclude/petscsys.h"
+
+    implicit none
+    
+    type, public :: cpr_ctx
+            Mat :: A, Ap 
+            Vec :: r, x, rp, xp, s1, s2
+            KSP :: ksp, ksp_p
+            PC  :: pc_1, pc_2
+            integer :: decoupler
+            real    :: t1, t2
+            real    :: dec_t, sol_t
+    end type
+    
+    public      :: cpr_init
+    public      :: cpr_apply
+    private     :: QIMPES_dec
+    private     :: ABF_dec
+    public      :: cpr_reset_ksp 
+    type(cpr_ctx), public :: ctx
+
+    interface
+        subroutine PCShellSetContext(pc, ctx, ierr)
+        use petscksp
+        import :: cpr_ctx
+        PC :: pc
+        type(cpr_ctx) :: ctx
+        integer :: ierr
+        end subroutine
+    end interface
+
+    interface
+        subroutine PCShellGetContext(pc, ctx, ierr)
+        use petscksp
+        import :: cpr_ctx
+        PC :: pc
+        type(cpr_ctx), pointer :: ctx
+        integer :: ierr
+        end subroutine
+    end interface
+
+    contains
+
+    subroutine cpr_init(ctx)
+    ! CPR is a two-stage preconditioner. The first preconditioner is used
+    ! to solve the pressure subsystem (using GMRES or AMG), the second is used to 
+    ! solve the combined preconditioned pressure and saturation system 
+    ! (using ILU).
+
+    integer :: ierr
+    type(cpr_ctx) :: ctx
+    PC :: prec
+    PetscInt :: nrows, ncols
+
+    NWSIZE = NWM*NWBCM*NCP1
+    nrows = NB*NCP1 + NWSIZE
+    ncols = nrows
+    ctx%dec_t = 0
+    ctx%sol_t = 0
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! Create matrices and vectors used in CPR solver                      !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    call VecCreateSeq(PETSC_COMM_WORLD, nrows, ctx%r, ierr)
+    call VecSetBlockSize(ctx%r, NCP1, ierr)
+    call VecSetUp(ctx%r, ierr)
+    call VecDuplicate(ctx%r, ctx%x, ierr)
+    call VecDuplicate(ctx%r, ctx%s1, ierr)
+    call VecDuplicate(ctx%r, ctx%s2, ierr)
+    call MatCreate(PETSC_COMM_WORLD, ctx%A, ierr)
+    call MatSetType(ctx%A, MATSEQAIJ, ierr)
+    call MatSetSizes(ctx%A, PETSC_DECIDE, PETSC_DECIDE, nrows, ncols, ierr)
+
+    call VecCreateSeq(PETSC_COMM_WORLD, nrows/NCP1, ctx%rp, ierr)
+    call VecDuplicate(ctx%rp, ctx%xp, ierr)
+    call MatCreate(PETSC_COMM_WORLD, ctx%Ap, ierr)
+    call MatSetSizes(ctx%Ap, PETSC_DECIDE, PETSC_DECIDE, nrows/NCP1, nrows/NCP1, ierr)
+    call MatSetUp(ctx%Ap, ierr)
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! Create the whole system krylov solver                               !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    call KSPCreate(PETSC_COMM_WORLD, ctx%ksp, ierr)
+    call KSPSetType(ctx%ksp, KSPFGMRES, ierr)
+    call KSPSetOperators(ctx%ksp, ctx%A, ctx%A, ierr)
+    call KSPGetPc(ctx%ksp, ctx%pc_1, ierr)
+    call PCSetType(ctx%pc_1, PCSHELL, ierr)
+    call PCShellSetApply(ctx%pc_1, cpr_apply, ierr)
+    call PCShellSetContext(ctx%pc_1, ctx, ierr)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! Create the first stage (inner) preconditioner.                      !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    call KSPCreate(PETSC_COMM_WORLD, ctx%ksp_p, ierr)
+    !call KSPSetType(ctx%ksp_p, KSPGMRES, ierr)
+    call KSPSetType(ctx%ksp_p, KSPPREONLY, ierr)
+    call KSPGetPc(ctx%ksp_p, prec, ierr)
+    !call PCSetType(prec, PCNONE, ierr)
+    call PCSetType(prec, PCHYPRE, ierr)
+    call PCHYPRESetType(prec, "boomeramg", ierr)
+
+    call KSPSetOperators(ctx%ksp_p, ctx%Ap, ctx%Ap, ierr)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! Create the second stage (outter) preconditioner.                    !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    call PCCreate(PETSC_COMM_WORLD, ctx%pc_2, ierr)
+    call PCSetType(ctx%pc_2, PCILU, ierr)
+    call PCSetOperators(ctx%pc_2, ctx%A, ctx%A, ierr)
+    end subroutine
+
+    subroutine cpr_apply(pc, res, res_o, ierr)
+    PC          :: pc, amg
+    Vec         :: res, res_o
+    Vec         :: r2
+    integer     :: ierr 
+    type(cpr_ctx), pointer :: ctx
+    Mat         :: pfmat, pfap
+    Vec         :: pfrhs, pfrp
+
+    call PCShellGetContext(pc, ctx, ierr)
+
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! Apply the first stage (inner) preconditioner.                       !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    call cpu_time(ctx%t1)
+    call ABF_dec(ctx%A, res, ctx%Ap, ctx%rp)
+    call cpu_time(ctx%t2)
+    ctx%dec_t = ctx%dec_t + ctx%t2 - ctx%t1
+    call cpu_time(ctx%t1)
+    call KSPGetPC(ctx%ksp_p, amg, ierr)
+    call PCApply(amg, ctx%rp, ctx%xp, ierr)
+    !call KSPSolve(ctx%ksp_p, ctx%rp, ctx%xp, ierr)
+    call cpu_time(ctx%t2)
+    ctx%sol_t = ctx%sol_t + ctx%t2 - ctx%t1
+    call VecZeroEntries(ctx%s1, ierr)
+    call VecStrideScatter(ctx%xp, 0, ctx%s1, INSERT_VALUES, ierr)
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ! Apply the second stage (outter) preconditioner.                     !
+    !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    call MatMult(ctx%A, ctx%s1, ctx%s2, ierr)
+    call VecAYPX(ctx%s2, -1.d0, res, ierr)
+    call PCApply(ctx%pc_2, ctx%s2, res_o, ierr)
+    call VecAYPX(res_o, 1.d0, ctx%s1, ierr)
+    end subroutine
+
+    subroutine QIMPES_dec(A, Ap)
+    ! The QIMPES decoupler produces the following pressure matrix !
+    ! and corresponding residual :                                !
+    ! Ap  = App - Aps * Dss * Asp                                 !
+    ! rp* = rp - Aps * Dss * rs                                   !
+    Mat, intent(in)     :: A, Ap
+    integer :: ierr
+
+    end subroutine
+
+    subroutine ABF_dec(A, r, Ap, rp)
+    ! The ABF decoupler produces the following pressure matrix  !
+    ! and corresponding residual:                               !
+    ! Ap  = lambda_inv * (Dss*App - Dps*Asp)                    !
+    ! rp* = lambda_inv * (Dss*rp - Dps*rs)                      !
+    ! lambda_inv = Dpp*Dss - Dps*Dsp                            !
+    Mat, intent(in)     :: A, Ap
+    Vec, intent(in)     :: r, rp
+    Vec :: diag, mult
+    PetscInt            :: i, j, k, ierr, nrows, ncols, rsize
+    PetscScalar, dimension(:,:), pointer         :: all_vals 
+    PetscScalar, dimension(:), pointer         :: Ap_row, row_vals
+    PetscScalar         :: diag_block(0:NCP1-1, 0:NCP1-1)
+    PetscInt            :: Ap_colIdx(0:maxval(PNNZD)), nnzr
+    PetscInt, dimension(:), pointer     :: colsIdx, ix
+    PetscScalar         :: lambda_inv
+    integer             :: blk_size, pressEq_row, diag_indx, nblks_row, blk_col 
+    integer             :: LWORK, INFO
+    integer, dimension(NCP1) :: IPIV
+    real, dimension(NCP1) :: WORK
+
+    Ap_colIdx(:) = -1
+    blk_size = NCP1
+    rsize = maxStencil*NCP1 + NWSIZE
+    call MatGetLocalSize(A, nrows, ncols, ierr)
+    allocate(all_vals(0:blk_size-1, 0:rsize))
+    allocate(Ap_row(0:rsize), row_vals(0:rsize), colsIdx(0:rsize), ix(0:blk_size-1))
+    call VecCreate(PETSC_COMM_WORLD, diag, ierr)
+    call VecSetType(diag, VECSEQ, ierr)
+    call VecSetSizes(diag, PETSC_DECIDE, nrows, ierr)
+    call VecSetBlockSize(diag, blk_size, ierr)
+    call VecDuplicate(diag, mult, ierr)
+    LWORK = blk_size
+
+    ! ============================================================= !
+    !                 Main loop over blocks in a row                !
+    ! ============================================================= !
+    ! loop over the blocked matrix rows to construct Ap, the        !
+    ! matrices App, Aps, Asp, Ass, Dpp, Dps, Dsp and Dss are never  !
+    ! constructed explicitly, but there corresponding row values    !
+    ! are used to build Ap.                                         !
+    do i = 0, (nrows/blk_size)-1 !NB-1
+        all_vals(:,:) = 0
+        row_vals(:) = 0
+        colsIdx(:) = 0
+        Ap_ColIdx(:) = 0
+        ! ======================================== !
+        ! Pressure equation extraction             !
+        ! ======================================== !
+        pressEq_row = i*blk_size
+        call MatGetRow(A, pressEq_row, nnzr, colsIdx, row_vals, ierr)
+        nblks_row = nnzr/blk_size
+        ! loop to get diagonal block column index 
+        diag_indx = -1 
+        do j = 0, nnzr-1, blk_size !PNNZD(pressEq_row), blk_size
+           if(colsIdx(j) == pressEq_row) then
+              diag_indx = j
+              exit
+           endif
+        enddo
+        ! App and Aps
+        all_vals(0, :) = row_vals(:)
+        Ap_ColIdx = ColsIdx(0::blk_size)/blk_size
+        call MatRestoreRow(A, pressEq_row, nnzr, colsIdx, row_vals, ierr)
+        ! ======================================== !
+        ! Concentrations equations extraction      !
+        ! ======================================== !
+        do k = 1, blk_size-1 
+           call MatGetRow(A, pressEq_row+k, nnzr, colsIdx, row_vals, ierr)
+           ! Asp and Ass
+           all_vals(k, :) = row_vals(:)
+           call MatRestoreRow(A, pressEq_row+k, nnzr, colsIdx, row_vals, ierr)
+        enddo
+        ! ======================================== !
+        ! Inversion of diagonal blocks             !
+        ! ======================================== !
+        diag_block = all_vals(:, diag_indx:diag_indx+blk_size-1)
+        call DGETRF(blk_size, blk_size, diag_block, blk_size, IPIV, INFO)
+        call DGETRI(blk_size, diag_block, blk_size, IPIV, WORK, LWORK, INFO)
+        if (INFO > 0) then
+                write(*,*) "CPR ABF extraction failed."
+                call exit()
+        endif
+        ! ======================================== !
+        ! Ap row to insert                         !
+        ! ======================================== !
+        Ap_row(:) = 0
+        do j=0, nblks_row-1
+                blk_col = j*blk_size
+                do k=0, blk_size-1
+                        Ap_row(j) = Ap_row(j) + diag_block(0, k) * all_vals(k, blk_col)
+                        ix(k) = pressEq_row + k
+                enddo
+        enddo
+        call MatSetValues(Ap, 1, i, nblks_row, Ap_ColIdx(0:nblks_row-1), Ap_row(0:nblks_row-1), INSERT_VALUES, ierr)
+        call VecSetValues(diag, blk_size, ix, diag_block(0,:), INSERT_VALUES, ierr)
+    enddo
+    call MatAssemblyBegin(Ap, MAT_FINAL_ASSEMBLY, ierr)
+    call MatAssemblyEnd(Ap, MAT_FINAL_ASSEMBLY, ierr)
+    call VecAssemblyBegin(diag, ierr)
+    call VecAssemblyEnd(diag, ierr)
+
+    call VecPointwiseMult(mult,diag,r,ierr)
+    k = 0
+    call VecStrideGather(mult,k,rp,INSERT_VALUES,ierr)
+    do k = 1,blk_size-1
+        call VecStrideGather(mult,k,rp,ADD_VALUES,ierr)
+    enddo
+    end subroutine
+
+    subroutine cpr_reset_ksp(ctx)
+    integer :: ierr
+    type(cpr_ctx) :: ctx
+    call KSPDestroy(ctx%ksp_p, ierr)
+    call PCDestroy(ctx%pc_2, ierr)
+    call cpr_init(ctx)
+    end subroutine
+
+    END Module
+\end{lstlisting}

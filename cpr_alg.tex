@@ -4,16 +4,15 @@
 \SetCommentSty{mycommentfont}
 
 \section{CPR Algorithm}
-
+\subsection{Eclipse Implementation}
 %{\raggedright
 %\begin{minipage}{.7\linewidth}
 \begin{algorithm}[H]
-    \caption{Eclipse Implementation Of CPR\cite{ecl_tech}.}
+    \caption{Eclipse Implementation Of CPR \cite{ecl_tech}.}
     \label{cpr_ecl}
     \DontPrintSemicolon
     \KwIn{Jacobian matrix: $\mathbf{A}$ and Nonlinear Residual: $\mathbf{R}$.}
-    \KwOut{CPR preconditioned vector: $\mathbf{x}$, for the \texttt{FGMRES}.}
-    \SetKwProg{Fn}{Function}{ is}{end}
+    \KwOut{CPR preconditioned vector: $\mathbf{x}$, for the \texttt{FGMRES}.} \SetKwProg{Fn}{Function}{ is}{end}
 	\While{\texttt{FGMRES \textcolor{red}{is not convergent}}}{
 	\Fn{\texttt{CPR\_PRECOND}\texttt{(A, R)}} {
         \begingroup
@@ -38,8 +37,43 @@
 %\par
 %}
 
+\subsection{Intersect IX Implementation}
+The linear solver in \texttt{Intersect IX} uses \textit{Flexible Generalized Minimum Residual} as a Krylov subspace solver, specifically a Restarted FGMRES.  
+The default preconditioner in \texttt{Intersect IX} is the Constrained Pressure Residual. The two-stage preconditioner implementation in \texttt{Intersect IX}
+is detailed in \cite{ix-cpr,ix-tech}. The CPR preconditioning matrix can be written for a general decoupling matrix $W$ as:
+\begin{equation}
+	M_{CPR}^{-1} = M^{-1}[I - AC(W^{T}AC)^{-1}W^{T}] + C(W^{T}AC)^{-1}W^{T}\approx A^{-1}
+\end{equation}
+The $C$ matrix is a linear operator ($\mathbb{R}^{n_{cell}}\Rightarrow\mathbb{R}^{n_{eqn}\cdot n_{cell}}$) referred to as a restriction operator.
+The operator is formally written as:
+\begin{align*}
+	C = \begin{bmatrix}
+		\mathbf{e_{p}} & & & & \\
+		      & \mathbf{e_{p}} & & &\\ 
+		      &  & \mathbf{e_{p}}& &\\ 
+		      &  & & \mathbf{e_{p}}&\\ 
+		      &  & & &\mathbf{e_{p}}\\ 
+	\end{bmatrix}, \ 
+	\mathbf{e_{p}} = \begin{bmatrix}
+		0\\
+		\vdots\\
+		0\\
+		1
+	\end{bmatrix}
+\end{align*}
+Where the vector $\mathbf{e_{p}}$ is a unit vector of size $n_{eqn}$.
+The matrix $M$ represents a preconditoiner for the second-stage on the whole system combined. Usually \texttt{ILU(0)} is used.
+Both in \texttt{UTCOMPRS} and \texttt{Intersect IX} the decoupling operator used is $W^{T} = C^{T}DIAG^{-1}(A)$. Where $DIAG(A)$,
+is the diagonal blocks of the jacobian matrix, that is zeroing every other block not along the diagonal. The pressure matrix can be written
+using these operators as a matrix with size $n_{cell}\times n_{cell}$:
+\begin{equation}
+	A_{p} = W^{T}AC
+\end{equation}
+The right hand side of the pressure subsystem is produced by application of the same linear operator $M_{CPR}^{-1} \ (\mathbb{R}^{n_{eqn}n_{cell}}\Rightarrow\mathbb{R}^{n_{cell}})$ 
+on the system original residual $r$.
+
 \begin{algorithm}[H]
-    \caption{Intersect Implementation Of CPR\cite{ecl_tech}.}
+    \caption{Intersect Implementation Of CPR \cite{ix-tech}.}
     \label{cpr_ecl}
     \DontPrintSemicolon
     \KwIn{Jacobian matrix: $\mathbf{A}$ and Nonlinear Residual: $\mathbf{R}$.}
@@ -50,13 +84,13 @@
         \begingroup
         \color{red}
 	    \textcolor{blue}{\ttfamily{\slash/ First Stage Preconditioner}}\\
-	    $\mathbf{r_{p} = C^{T}GR}$ \hspace{1cm}\tcp{Restric the residual to the prssure system.}
-	    $\mathbf{\mathbf{A_{p} x_{p}} = \mathbf{r_{p}}}$ \hspace{0cm}\tcp{Solve using \texttt{GMRES} with Nested-Factorization.}
+	    $\mathbf{r_{p} = W^{T}R}$ \hspace{1cm}\tcp{Restric the residual to the prssure system.}
+	    $\mathbf{\mathbf{A_{p} x_{p}} = \mathbf{(W^{T}AC)x_{p}}=\mathbf{r_{p}}}$ \hspace{0cm}\tcp{Solve using \texttt{GMRES} with Nested-Factorization.}
 	    \textcolor{black}{\texttt{call GMRES}} \hspace{2cm}$\textcolor{black}{\longleftarrow}$ \textcolor{NavyBlue}{\texttt{inner GMRES}}
             \hfill\\
 	    \textcolor{blue}{\ttfamily{\slash/ Second Stage Preconditioner}}\\
 	    $\mathbf{\tilde{r} = r - \mathbf{A}C\mathbf{x_{p}}}$ \hspace{0.35cm}\tcp{Expand residual by padding the other variables.}
-	    $\mathbf{\tilde{x} = \tilde{M^{-1}} \tilde{r}}$ \hspace{0.9cm}\tcp{Preform Nested-Factorization on the expanded}\hspace{2.7cm}\tcp{residual.}
+	    $\mathbf{\tilde{x} = M^{-1} \tilde{r}}$ \hspace{0.9cm}\tcp{Preform ILU(0) Factorization on the expanded}\hspace{2.7cm}\tcp{residual.}
             \hfill\\
 	    \textcolor{blue}{\ttfamily{\slash/ Combine Results}}\\
 	    $\mathbf{\mathbf{x = \tilde{x} + C x_{p}}}$ \hspace{0.25cm}\tcp{Combine the results of the two stages.}

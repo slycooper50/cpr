@@ -1,0 +1,64 @@
+\begin{tikzpicture}
+\colorlet{veccol}{green!45!black}
+\colorlet{myred}{red!90!black}
+\colorlet{myblue}{blue!90!black}
+\colorlet{mypurple}{blue!50!red!80!black!80}
+\tikzstyle{vector}=[->,very thick,veccol]
+\usetikzlibrary{arrows.meta}
+\tikzstyle{thin arrow}=[dashed,thin,-{Latex[length=4,width=3]}]
+\definecolor{alizarin}{rgb}{0.82, 0.1, 0.26}
+\definecolor{ceruleanblue}{rgb}{0.16, 0.32, 0.75}
+
+ \path[fill=blue!30] (0,0) coordinate(p1) --  ++(10:2.5) coordinate(p2)
+ -- ++(-30:1.5) coordinate(p3) --
+ ++(-90:2.5) coordinate(p4) --  ++(150:3) coordinate(p5);
+
+ \coordinate (c1) at (barycentric cs:p1=1,p2=1,p3=1,p4=1,p5=1);
+ \node at (c1) [xshift=-0.6cm, yshift=0.6cm] {$\Omega_{i}$};
+ \draw[fill=red](c1) circle (1 pt) node  [above] {$p_{i}$};
+
+ \foreach \X [count=\Y] in {2,...,6}
+ {\ifnum\X=6
+   \path (p\Y) -- (p1) coordinate[pos=0](a\Y) coordinate[pos=1](a1)
+   coordinate[pos=0.5](m1);
+   \draw (a\Y) -- (a1);
+   %\draw[-latex] (m1) -- ($ (m1)!1.2cm!90:(p1) $) node[pos=1.2]{$a_{\Y}$};
+  \else
+   \path (p\Y) -- (p\X) coordinate[pos=0](a\Y) coordinate[pos=1](a\X)
+   coordinate[pos=0.5](m\X);
+   \draw (a\Y) -- (a\X);
+   %\draw[-latex] (m\X) -- ($ (m\X)!1.2cm!90:(p\X) $) node[pos=1.2]{$a_{\Y}$};
+  \fi}
+
+ \path[fill=orange!30] (p3) coordinate(s1) --  ++(p1) coordinate(s2) -- ++(-2.5:1.5) coordinate(s3) 
+ -- ++(-45:2.5) coordinate(s4) --
+ (p4) coordinate(s5) ;
+
+ \coordinate (c2) at (barycentric cs:s1=1,s2=1,s3=1,s4=1,s5=1);
+ \node at (c2) [xshift=0.6cm, yshift=-0.6cm] {$\Omega_{j}$};
+ \draw[fill=black](c2) circle (1 pt) node [above] {$p_{j}$};
+
+ \foreach \X [count=\Y] in {2,...,6}
+ {\ifnum\X=6
+   \path (s\Y) -- (s1) coordinate[pos=0](b\Y) coordinate[pos=1](b1)
+   coordinate[pos=0.5](t1);
+   \draw (b\Y) -- (b1);
+   %\draw[-latex] (m1) -- ($ (m1)!1.2cm!90:(p1) $) node[pos=1.2]{$a_{\Y}$};
+  \else
+   \path (s\Y) -- (s\X) coordinate[pos=0](b\Y) coordinate[pos=1](b\X)
+   coordinate[pos=0.5](t\X);
+   \draw (b\Y) -- (b\X);
+   %\draw[-latex] (m\X) -- ($ (m\X)!1.2cm!90:(p\X) $) node[pos=1.2]{$a_{\Y}$};
+  \fi}
+
+  \coordinate (s1+s5) at ($0.5*(s1)+0.5*(s5)$);
+  \draw[vector,thin arrow,alizarin] (barycentric cs:p1=1,p2=1,p3=1,p4=1,p5=1) -- (s1+s5) node[midway,above] {$\vec{\vb{c}}_{i,j}$};
+  \draw[vector,thin arrow,ceruleanblue] (s1+s5) -- ++(0.5,0) coordinate(s1+s5) node[midway,above] {$ \ \ \vec{\vb{n}}_{i,j}$};
+
+\node at (-3,0.5) {$\begin{aligned}
+		T_{i,j} &= A_{i,j}\mathbf{K_{i}}\frac{\vec{c}_{i,j}\cdot\vec{n}_{i,j}}{|\vec{c}_{i,j}|^{2}}\\
+		T_{ij}	&= [T_{i,j}^{-1}+T_{j,i}^{-1}]^{-1}\\
+		&\sum_{j}T_{ij}(p_{i}-p_{j}) = q_{i}
+		\end{aligned}$};
+
+\end{tikzpicture}

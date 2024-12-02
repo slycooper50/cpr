@@ -116,44 +116,22 @@ b
 \end{equation}
 
 \subsection{The Jacobian Matrix}
+During the early stages of running a simulator, there has to be part of the software responsible for
+building what's refered to as a connectivity graph. The connectivity graph is an essential data structure used
+when constructing the jacobian matrix. It basically contains information about which gridblock variables will effect
+another gridblock variables. That is which gridblock is connected to which gridblock. This information depends on the
+way gridblocks are ordered and numbered. It also depends on whether the simulation model contains non-neighboring connections
+like wells or fractures. It also depends on the dimensionality of the simulation model. For an example of a jacobian matrix for a 
+simple one dimensional simulation grid with no unusual connections see figure \ref{jacobian}.
 
-\begin{equation}
-\begin{pNiceArray}{cccccc}
-
-\begin{blockarray}{cccc}
-a & b & c  \\
-\begin{block}{(ccc)c}
-  1 & 1 & 1 & f \\
-  0 & 1 & 0 & g \\
-  0 & 0 & 1 & h \\
-\end{block}
-\end{blockarray}&&& \mbox{\Huge \textbf{$0$}}
-
-\\
- & \ddots\\
- &  & 
-\begin{blockarray}{cccc}
-a & b & c  \\
-\begin{block}{(ccc)c}
-  1 & 1 & 1 & f \\
-  0 & 1 & 0 & g \\
-  0 & 0 & 1 & h \\
-\end{block}
-\end{blockarray} 
- \\
-	&  & &  \ddots\\
-	&&&&
-\begin{blockarray}{cccc}
-a & b & c  \\
-\begin{block}{(ccc)c}
-  1 & 1 & 1 & f \\
-  0 & 1 & 0 & g \\
-  0 & 0 & 1 & h \\
-\end{block}
-\end{blockarray}
-
-\end{pNiceArray}
-\end{equation}
+\begin{figure}[H]
+%\raggedright
+\resizebox{9.5cm}{!}{\input{tikz/jacobian.tikz}}
+\caption{Example of a Jacobian matrix constructed for three components one dimensional problem.}
+\label{jacobian}
+\end{figure}
+Since we are solving a system of nonlinear PDEs with more than one variable being solved for, each entry of the matrix is a block of size
+$n_{eq}\times n_{eq}$. For fully-implicit systems the block size is usually $n_{comp}\times n_{comp}$.
 
 \section{Decoupling Techniques}
 The CPR procedure can be summarized by the following two steps:
@@ -176,7 +154,7 @@ In particular, the CPR preconditioner can be written as:
 \end{equation}
 The decoupling techniques for CPR are summarized in table \ref{dectec} and expounded in below sections.
 
-\begin{table}[htb]
+\begin{table}[h!]
 \caption{List of pressure decoupling operators used in CPR algorithm.}
 \label{dectec}
     \footnotesize
@@ -223,6 +201,42 @@ $\delta_{x}^{i} = \begin{cases}
 \end{table}
 
 \subsection{Quasi-Implicit Pressure Explicit Saturation (QIMPES)}
+This decoupling technique was first introduced in \cite{IPARSdecoupling}. It is inspired by the famous IMPEC formulation as imlemented by Coats in \cite{impescoats}.
+In this decoupling technique, there are three main assumptions made with regards to the system being solved:
+\begin{assumption}
+	The solution vector is ${Y_{j}}, \ (j=1,...,n+m)$. With $Y_{1}$, referring to the pressure variable, and the remaining variables being
+	saturations or concentrations.
+\end{assumption}
+
+\begin{assumption}
+	When the jacobian matrix $A$ is constructed with gridblock ordering, the off-diagonal blocks are negligible.
+\end{assumption}
+
+\begin{assumption}
+	For the following system of equations:
+	\begin{align}
+		\begin{pmatrix}
+			A_{p}&A_{ps}\\
+			A_{sp}&A_{s}
+		\end{pmatrix} 
+		\begin{pmatrix}
+			Y_{p}\\
+			Y_{s}
+		\end{pmatrix} 
+		= 
+		\begin{pmatrix}
+			Z_{p}\\
+			Z_{s}
+		\end{pmatrix} 
+	\end{align}
+	If $\tilde{Y}_{p}$ and $\tilde{A}_{s}$ are good approximations of $Y_{p}$ and $A_{s}$ respectively,
+	then $(\tilde{Y}_{p}, \tilde{A}_{s}^{-1}(Z_{s}-A_{sp}\tilde{Y}_{p}))^{T}$ is a good approximation of $(Y_{p}, Y_{s})^{T}$.
+\end{assumption}
+
+The matrix $A$ is the resulting matrix after a Schur Complement to reduce the size to $n_{c}\times n_{c}$, by eliminating the constraints equations.
+Note that in the original paper of QIMPES, the algorithm is reduced to preconditioning of the pressure subsystem only. The typical two-stage preconditioning
+(saturation with pressure corrected) is refered there as \textit{Combinative Technique}. These combinative techniques rely on a feedback from the pressure preconditioner
+and produce a guess that accounts for pressure-saturation interaction.
 
 \subsection{Alternate Block Factorization (ABF)}
 This method was introduced firstly in the semi-conductors simulation industry in 1989\supercite{Bank1989}. Like other decoupling strategies the

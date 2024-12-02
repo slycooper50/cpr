@@ -1,3 +1,19 @@
 \chapter{Implementation In UTCOMP}
+The preconditioner module developed in the compositional simulator \texttt{UTCOMP}, follows a
+decoupling technique simliar to the technique in the \texttt{INTERSECT IX} the next \textit{SLB}
+generation of reservoir simulators. The details of the CPR implementation in \texttt{INTERSECT IX}
+are presented in \cite{ix-cpr}. The CPR preconditioner in \texttt{UTCOMP} is developed as a customized
+\texttt{PETSC} preconditioner, since \texttt{UTCOMP} is using \texttt{PETSC} Krylov-based iterators 
+for the linear solution of resulting system of equations. During the \texttt{FGMRES} cycle of \texttt{PETSC}, 
+the customized preconditioner is called and the decoupling of the pressure equation is performed. \texttt{PETSC}
+provides an interface to the \texttt{hypre} library of fast preconditioners and AMG solvers\supercite{hypre}.
+The AMG solver \texttt{BoomerAMG}\supercite{boomeramg}, is used to solve the pressure subsystem. The second stage
+of the preconditioner consists of combining the pressure solution from AMG with the secondary variables to apply
+a global \texttt{ILU(0)} preconditioning on the system as a whole. 
+
+The decoupling is performed by looping over the main diagonal sub-blocks of the jacobian matrix 
+and inverting them to build the decoupling operator. In \texttt{UTCOMP}, the inversion
+of the block entries along the diagonal is performed using a direct solver, LU factorization, 
+from the \texttt{LAPACK} library. 
 
 \input{cpr_alg.tex}

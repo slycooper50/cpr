@@ -56,7 +56,7 @@
 
 %%%%%%%%%  Representative set-up for biblatex  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\usepackage[style=ieee,maxbibnames=10,sorting=none]{biblatex}% style=ext-numeric-comp,articlein=false,giveninits=true
+\usepackage[citestyle=numeric-comp,maxbibnames=10,sorting=none]{biblatex}% style=ext-numeric-comp,articlein=false,giveninits=true
 	\DefineBibliographyStrings{english}{url= \textsc{url} ,  }% replaces default "[Online]. Available" by "URL"
 
 \usepackage{ragged2e}
@@ -115,6 +115,9 @@
 \usepackage{adjustbox}
 \usepackage[flushleft]{threeparttable}
 \usepackage{colortbl}
+\usepackage{floatrow}
+\floatsetup[table]{capposition=top}
+\usepackage{amssymb}
 %\captionsetup{%
 %   justification=raggedright,
 %   labelfont=bf,
@@ -123,6 +126,14 @@
 \usepackage{tikz}
 \usetikzlibrary{shapes,arrows.meta,calc,fit,shapes.multipart, 
  positioning, backgrounds}
+\usetikzlibrary{matrix,decorations.pathreplacing, 3d}
+\usepackage{multicol,ragged2e,siunitx}
+\usepackage{cleveref}
+\sisetup{per-mode=symbol}
+\setlength{\fboxsep}{5pt}
+\usepackage{physics}
+\tikzset{>=latex} % for LaTeX arrow head
+\setcounter{MaxMatrixCols}{200}
 
 %%%%%%%%%%%%%% Tensor Double Arrow %%%%%%%%%%%%%%
 \DeclareFontFamily{OMS}{oasy}{\skewchar\font48 }
@@ -144,6 +155,7 @@
 \DeclareMathSymbol{\smallleftrightarrow}{\mathrel}{oasy}{"24}
 
 \newcommand{\tensor}[1]{\overset{\scriptscriptstyle\smallleftrightarrow}{#1}}
+\newtheorem{assumption}{Assumption}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
@@ -318,6 +330,7 @@
 
 \appendix
 \include{appendixa}
+%\include{appendixb}
 
 
 %%% Bibliography  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
