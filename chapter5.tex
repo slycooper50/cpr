@@ -3,13 +3,19 @@ Preconditioning refers to any modifications of the original system of equations 
 the iterative solver that will solve the system. Physics based precondtioning refers to the decoupling of the blocks in the jacobian
 matrix based on the nature of the variables and applying the appropriate preconditioner for each variable based on the nature of its equation.
 By recoginizing the global nature of the pressure variable, that is a change of pressure in a gridblock will effect the
-global domain of the reservoir, and the local nature of the concentraion or saturation variables, physically based preconditioner can be devised
+global domain of the reservoir, and the local nature of the concentraion or saturation variables, physics based preconditioner can be devised
 to treat each variable sperately. In reservoir simulation, these preconditioning techniques are refered to as two-stage precondtioners.
-The overall results of this report show that for compositional models, with a large number of component (more than 4), 
-the \textit{constrained pressure residual} preconditioner outperform the \textit{Incomplete Lower-Upper(0)} preconditioner 
-with \texttt{GMRES} as a Krylov solver. The research literature in reservoir simulation has further developed the CPR preconditioner, 
+The initial expectations for this report were to show that for compositional models, with a large number of components (more than 4), 
+the \textit{constrained pressure residual} preconditioner will outperform the \textit{Incomplete Lower-Upper(0)} preconditioner 
+with \texttt{GMRES} as a Krylov solver. The outperformance for these cases was less than expected. However, for cases where 
+the permeability field is heterogeneous and viscous fingering is taking place, the results are very promising for CPR. 
+An improvement on performance by a factor of $10$ can be achieved when compared with the default \texttt{GMRES-ILU(0)} solver.
+
+The research literature in reservoir simulation has further developed the CPR preconditioner, 
 since its appearance in 1985 \cite{Wallis_1985}. The improvements include the implementation of several decoupling techniques, combining
 CPR with Algebraic Multigrid as a precondtioner for the resulting pressure subsystem and the extension of CPR to handle thermal models by
 developing \textit{Constrained Pressure-Temperature Residual}(CPTR) preconditioner \cite{cptr}.
 Possible further investigations in this area can be applying CPR on adaptive-implicit formulations. Based on the degree of implicitness of the
-system such preconditioning techniques may or may not be effective. 
+system such preconditioning techniques may or may not be effective. Moreover, it is instructive to investigate the condition numbers for matrices
+where CPR is outperforming the default solver to track the type of problems CPR will be most effective.
+

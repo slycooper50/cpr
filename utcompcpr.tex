@@ -1,0 +1,18 @@
+\RestyleAlgo{ruled}
+\SetKwComment{Comment}{/* }{ */}
+
+\begin{algorithm}
+\caption{Constrained Pressure Residual implementation in \texttt{UTCOMPRS}.}\label{utcompcpr}
+Apply ABF to decouple jacobian $J$ into $A_{p}$ (Decoupling takes place every Newtonian iteration);\\
+set k = 0;\\
+\While{\texttt{TRUE}}{
+	Compute residual $r_{k} = b-Au_{k}$;\\
+	Decouple $A$ to get $A_{p}$;\\
+	Solve for pressure correction using AMG: $A_{p}x_{p}=R_{p}$;\\
+	Combine pressure solution with concentration variables $r_{k+1} = r_{k}-AR_{p}^{T}x_{p}$;\\
+	\uIf{\texttt{converged}}{break;}
+	\ElseIf{\texttt{iters} $\geq$ \texttt{max\_iters}}
+	{cut timestep; \texttt{EXIT} While loop}
+
+}
+\end{algorithm}

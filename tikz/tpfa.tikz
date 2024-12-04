@@ -9,9 +9,9 @@
 \definecolor{alizarin}{rgb}{0.82, 0.1, 0.26}
 \definecolor{ceruleanblue}{rgb}{0.16, 0.32, 0.75}
 
- \path[fill=blue!30] (0,0) coordinate(p1) --  ++(10:2.5) coordinate(p2)
- -- ++(-30:1.5) coordinate(p3) --
- ++(-90:2.5) coordinate(p4) --  ++(150:3) coordinate(p5);
+ \path[fill=blue!30] (0,0) coordinate(p1) --  ++(1:2.5) coordinate(p2)
+ -- ++(30:0) coordinate(p3) --
+ ++(-100:3) coordinate(p4) --  ++(170:3) coordinate(p5);
 
  \coordinate (c1) at (barycentric cs:p1=1,p2=1,p3=1,p4=1,p5=1);
  \node at (c1) [xshift=-0.6cm, yshift=0.6cm] {$\Omega_{i}$};
@@ -56,7 +56,7 @@
   \draw[vector,thin arrow,ceruleanblue] (s1+s5) -- ++(0.5,0) coordinate(s1+s5) node[midway,above] {$ \ \ \vec{\vb{n}}_{i,j}$};
 
 \node at (-3,0.5) {$\begin{aligned}
-		T_{i,j} &= A_{i,j}\mathbf{K_{i}}\frac{\vec{c}_{i,j}\cdot\vec{n}_{i,j}}{|\vec{c}_{i,j}|^{2}}\\
+	T_{i,j} &= A_{i,j}\frac{\mathbf{\tensor{K}}_{i}\cdot\vec{c}_{i,j}\cdot\vec{n}_{i,j}}{|\vec{c}_{i,j}|^{2}}\\
 		T_{ij}	&= [T_{i,j}^{-1}+T_{j,i}^{-1}]^{-1}\\
 		&\sum_{j}T_{ij}(p_{i}-p_{j}) = q_{i}
 		\end{aligned}$};

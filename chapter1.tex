@@ -2,12 +2,12 @@
 % Version: 1.04, 2023/10/19
 % Documentation: https://ctan.org/pkg/mitthesis
 \chapter{Introduction}
-The use of models is part of our everyday life. In our modern society, we are sourounded by a myriad of complex systems that are
-essential for the workings of our lifes from transportation, communication and food processing to energy production. Scientis and engineers
+The use of models is part of our everyday life. In our modern society, we are surrounded by a myriad of complex systems that are
+essential for the workings of our lives from transportation, communication and food processing to energy production. Scientists and engineers
 handle complexity by building simplified models that can be further enhanced to increase their ability to describe the complex systems.
 In the petroleum industry, reservoir simulation is a branch of reservoir engineering that aims to develop models of the petroleum systems.
 These models are built using knowledge of geological, geophysical and petrophysical properties of the petroleum reservoir system.
-They are routinely used to describe fluid flow during the phase of field development planning and production, which enable the engineers 
+They are routinely used to describe fluid flow during the phase of field development planning and production, which enables the engineers 
 to develop an optimum field production plan. The importance of reservoir simulation stems from the complexity of the physical systems that reservoir 
 engineers attempt to describe. The use of mathematical models is essential to provide precise and valuable answers to the questions the simulator is 
 set to answer. 
@@ -24,10 +24,10 @@ permeability and multiphase fluid flow parameters like capillary pressure and re
 conservation laws and a constitutive Darcy's law for flow in porous media must also be incorporated as a model to the reservoir simulator.
 Several fluid modeling techniques are used in the industry, the most commonly known are the \textit{Black-oil} and \textit{Compositional} models.
 Moreover, the boundary conditions for the differential equations describing the fluid flow are the wells, both injectors and producers. 
-The wells are also routinely modeled in the simulator using differential equations to describe inflow performance of the wells. One of well models
+The wells are also routinely modeled in the simulator using algebraic equations to describe inflow performance of the wells. One of the well models
 main objectives is to relate the reservoir gridblock pressure to the well bottom hole pressure. More sophisticated well models handle cross flow and
 multilateral, horizontal and slanted wells. Reservoir simulators can also include additional models to simulate networks of fractures, surface facilities,
-enhanced oil recovery and geomechanics. The main standard models that a simple reservoir simulator must incorporate are summarized in figure \ref{models}.
+enhanced oil recovery and geomechanics. The main standard models that a simple Black-Oil reservoir simulator must incorporate are summarized in figure \ref{models}.
 
 The inner components of reservoir simulators are more or less universal. Each simulator has to support a 
 gridding infrastructure to support discretization of the simulation domain, a nonlinear solver (usually based on Newton's Method) to 
@@ -42,10 +42,10 @@ Corner-Point Geometry. The third \texttt{Multi-Purpose Simulator (MPS)} is focus
 various recovery processes. The modeling group maintains the development of all three simulators. 
 
 The overall algorithm of a reservoir simulator can be simplified by focusing on the essential components. These will be found in every reservoir simulator, whether
-its foucsed on research or industrial activities. The simulation process is depicted in figure \ref{simulator}. The process commences by parsing the input files that describe the
-reservoir and boundary conditions as specified by wells or aquifers. Then an algroithm to build the simulation grid is run and connectivity graph is constructed. Then the three main
+its focused on research or industrial activities. The simulation process is depicted in figure \ref{simulator}. The process commences by parsing the input files that describe the
+reservoir and boundary conditions as specified by wells or aquifers. Then an algorithm to build the simulation grid is run and connectivity graph is constructed. Then the three main
 loops of the simulator are entered. These loops consist of a time loop that will finish once the end of specified simulation time is reached. The second inner loop is Newtonian loop,
-that will end once the set of nonlinear equations are solved with acceptable tolerance. The third inner loop is the linear solver loop that will finish once the linear system of equations
+which will end once the set of nonlinear equations are solved with acceptable tolerance. The third inner loop is the linear solver loop that will finish once the linear system of equations
 is solved with acceptable tolerance.
 
 \begin{figure}[htb]
@@ -57,7 +57,7 @@ is solved with acceptable tolerance.
 
 A crucial advantage of simulation tools over classical engineering analysis practices is the ability
 to perform a large number of calculations in an efficient way. In reservoir simulation, the most taxing
-component of runing a simulator is usually the linear solver. Therefore, research in developing efficient
+component of running a simulator is usually the linear solver. Therefore, research in developing efficient
 techniques in solving large system of equations is ample in the reservoir simulation literature. The main
 focus is usually on developing scalable preconditioners that can be combined with iterative Krylov-based 
 iterators. The industry standard preconditioner is the Constrained Pressure Residual. This preconditioner
@@ -65,35 +65,107 @@ has its roots in the works of Wallis\supercite{Wallis_1983,Wallis_1985}, the ess
 the resulting system of linear equations by isolating the elliptic dominant part of the system (pressure) from 
 the hyperbolic (saturation or concentration) part of the system. 
 
-The convergance of a Krylov iterative solver depends essentially on the preconditioner. The prototypical Krylov method, the
+The convergence of a Krylov iterative solver depends essentially on the preconditioner. The prototypical Krylov method, the
 Conjugate Gradient can handle Symmetric-Positive-Definite matrices. For reservoir simulation cases, where matrices are ill-conditioned and
 not symmetric, the Generalized Minimum Residual \textit{GMRES}, is used\supercite{roy}. 
 
 \section{Spatial Discretization}
 The discretization techniques consist an active area of research in numerical solution of PDEs. Historically reservoir simulators used 
 finite-difference method to discretize the nonlinear PDE system. The current generation of reservoir simulators, both originating from
-academy and industry, utilize the Two-Point Flux-Approximation (TPFA), which is based on a finite volume method. Finit-volume mehthods 
-originate from a physically motivated conservation law. A more accurate method for high-resolution grids with non-orthogonal oriented 
+academy and industry, utilize the Two-Point Flux-Approximation (TPFA), which is based on a finite volume method. Finite-volume methods
+originate from conservation laws. A more accurate method for high-resolution grids with non-orthogonal oriented 
 grids with respect to the permeability tensor is the Multi-Point Flux-Approximation (MPFA) \cite{mpfa}. TPFA is not consistent for grids
 that are not K-orthogonal and a more accurate discretization technique must be used. In this brief description the discussion will be
-restricted the simple case of orthogonal grids and the TPFA will be discussed. 
+restricted to the simple case of orthogonal grids and the TPFA will be discussed. 
 
-The formulation used in \texttt{UTCOMPRS} can be described by the following system of PDEs\supercite{phdfernandes}:
+The formulation used in \texttt{UTCOMPRS} can be described by the following system of PDEs\supercite{phdfernandes} (see the nomenclature for symbols definition \ref{nomenclature}):
 \begingroup\makeatletter\def\f@size{12}\check@mathfonts
 \begin{equation}
 	\begin{cases}
 		\frac{1}{V_{b}} \frac{\partial N_{k}}{\partial t} = \sum_{j=2}^{n_{p}}\Big\{\nabla \cdot\Big( x_{kj}\xi_{j}\frac{k_{rj}}{\mu_{j}}\tensor{K}\cdot\nabla\Phi_{j}\Big) + \nabla \cdot \Big(\phi S_{j}\xi_{j}\tensor{\Lambda}_{kj}\cdot\nabla x_{kj}\Big)\Big\} - \frac{q_{k}}{V_{b}}, \ k=1,...,n_{c}\\\\
 		\frac{1}{V_{b}} \frac{\partial N_{w}}{\partial t} = \nabla \cdot \Big(\xi_{w}\frac{k_{rw}}{\mu_{w}}\tensor{K}\cdot \nabla\Phi_{w}\Big) - \frac{q_{w}}{V_{b}}
 	\end{cases}
+\label{systempde}
 \end{equation}\endgroup
+By taking an integral of the equation \ref{systempde} over a control volume $V_{i}$ (using the water equation for simplicity), the right hand side can be converted to surface integral using \textit{Guass's theorem}:
+\begin{equation}
+\int_{V_{i}}\Big[\nabla \cdot \Big(\xi_{w}\frac{k_{rw}}{\mu_{w}}\tensor{K}\cdot \nabla\Phi_{w}\Big) - \frac{q_{w}}{V_{i}}\Big] \ dV = \int_{S_{i}}\Big(\xi_{w}\frac{k_{rw}}{\mu_{w}}\tensor{K}\cdot \nabla\Phi_{w}\Big)\cdot \vec{dA} - q_{w,i}
+\end{equation}
+To further approximate the surface integral, a summation over the control volume faces is performed:
+\begin{equation}
+\int_{S_{i}}\Big(\xi_{w}\frac{k_{rw}}{\mu_{w}}\tensor{K}\cdot \nabla\Phi_{w}\Big)\cdot \vec{dA} \approx \sum_{s=1}^{n_{f}} \Big(\xi_{w}\frac{k_{rw}}{\mu_{w}}\tensor{K}\cdot \nabla\Phi_{w}\Big)\cdot\vec{A_{s}}
+\label{surface}
+\end{equation}
 
 \begin{figure}[htb]
 \raggedright
 \resizebox{13cm}{!}{\input{tikz/tpfa.tikz}}
-\caption{Two-Point Flux-Approximation.}\label{tpfa}
+\caption{Two-Point Flux-Approximation.}\label{tpfa-tikz}
 \end{figure}
 
+Now the approximation of the gradient operator can be carried out in two different ways. The first way is to use one-sided finite-difference to express the gradient of the potential as the difference between the potential $\Pi_{i,j}$
+at the face centroid between gridblock $i$ and $j$ and the potential at the center inside gridblock $i$, $\Phi_{w,i}$ (assuming pressure is constant inside a gridblock):
+\begin{equation}
+	\Big(\xi_{w}\frac{k_{rw}}{\mu_{w}}\tensor{K}\cdot \nabla\Phi_{w}\Big)\cdot\vec{A_{s}} \approx \xi_{w}\frac{k_{rw}}{\mu_{w}}A_{i,j}\tensor{K}_{i}\cdot\frac{(\Phi_{w,i}-\Pi_{i,j})\vec{c}_{i,j}}{|\vec{c}_{i,j}|^{2}}\cdot\vec{n}_{i,j} = \xi_{w}\frac{k_{rw}}{\mu_{w}}T_{i,j} (\Phi_{w,i}-\Pi_{i,j})
+	\label{flux_i}
+\end{equation}
+Carrying the same discretization for neighboring gridblock $j$, we get:
+\begin{equation}
+	\Big(\xi_{w}\frac{k_{rw}}{\mu_{w}}\tensor{K}\cdot \nabla\Phi_{w}\Big)\cdot\vec{A_{s}} \approx \xi_{w}\frac{k_{rw}}{\mu_{w}}A_{j,i}\tensor{K}_{j}\cdot\frac{(\Phi_{w,j}-\Pi_{j,i})\vec{c}_{j,i}}{|\vec{c}_{j,i}|^{2}}\cdot\vec{n}_{j,i} = \xi_{w}\frac{k_{rw}}{\mu_{w}}T_{j,i} (\Phi_{w,j}-\Pi_{j,i})
+	\label{flux_j}
+\end{equation}
+By making the following assumptions we can simplify the final discretization and arrive at the TPFA scheme:
+\begin{enumerate}[label=\color{alizarin}\Roman*.]
+	\item $\Pi_{i,j} = \Pi_{j,i}$: Continuity of face potential.
+	%\item $\vec{n}_{i,j} = -\vec{n}_{j,i}$: Opposite normal area vectors.
+	\item\label{potequal} (\ref{flux_i}) $=-$(\ref{flux_j}): Flux from gridblock $i$ to gridblock $j$, is minus flux from gridblock $j$ to gridblock $i$.
+\end{enumerate}
+Let the water flux from gridblock $i$ to gridblock $j$ be $v_{w, ij}$, writing both equations \ref{flux_i} and \ref{flux_j} using this:
+\begin{align}
+T_{i,j}v_{w, ij} = \xi_{w}\frac{k_{rw}}{\mu_{w}} (\Phi_{w,i}-\Pi_{i,j})\nonumber \\
+T_{j,i}v_{w, ij} = -\xi_{w}\frac{k_{rw}}{\mu_{w}}(\Phi_{w,j}-\Pi_{j,i})
+\label{fluxes}
+\end{align}
+Summing both equations in \ref{fluxes} and using condition \ref{potequal}:
+\begin{equation}
+(T_{i,j}^{-1}+T_{j,i}^{-1})v_{w, ij} = \xi_{w}\frac{k_{rw}}{\mu_{w}} (\Phi_{w,i}-\Phi_{w,j})
+\end{equation}
+Solving for the water flux $v_{w, ij}$:
+\begin{equation}
+v_{w, ij} = [T_{i,j}^{-1}+T_{j,i}^{-1}]^{-1}\xi_{w}\frac{k_{rw}}{\mu_{w}} (\Phi_{w,i}-\Phi_{w,j}) = \xi_{w}\frac{k_{rw}}{\mu_{w}}T_{ij}(\Phi_{w,i}-\Phi_{w,j})
+\end{equation}
+Inserting the last equation for flux in \ref{surface} and plugging it back to our main PDE \ref{systempde}, we get the TPFA scheme:
+\begin{equation}
+	\boxed{\frac{\partial N_{w,i}}{\partial t} = \sum_{j=1}^{nb}\lambda_{w,ij}T_{ij}(\Phi_{w,i}-\Phi_{w,j})- q_{w,i}}
+\label{tpfa}
+\end{equation}
+The terms $T_{i,j}$ and $T_{j,i}$ are refered to as \textit{half-transmissibilities} since they are associated with a half face.
+See figure \ref{tpfa} for an illustration of this approximation scheme for a simple incompressible flow.
+In carrying out the approximation in equations \ref{flux_i} and \ref{flux_j}, we have neglected the dot product between the permeability tensor $\tensor{K}$ and
+the gradient potential vector $\nabla\Phi_{w}$. This was done by assuming the gradient of the potential is along the face area vector $\vec{n}_{i,j}$. This is not always correct.
+Therefore, the TPFA scheme is not \textit{consistent}. Still, it is used as the standard spatial discretization technique in most industrial simulators. To avoid TPFA errors the simulation
+grid axes must be aligned along the permeability tensor. Grid orientation effects can distort simulation values and give incorrect results. Grids for which TPFA is appropriate are referred to as
+K-orthogonal grids and they satisfy the following condition:
+\begin{equation}
+	\vec{n}_{i,j}\cdot\tensor{K}\cdot\vec{n}_{i,k}, \ \ \forall j\neq k,
+	\label{korthogonal}
+\end{equation}
+where $\vec{n}_{i,j}$ and $\vec{n}_{i,k}$ denote normal vectors to faces of cell number $i$.
 
+Furthermore, assuming the permeability tensor is diagonal ($K_{xx} = K_{x}, \ K_{yy} = K_{y},\ K_{zz} = K_{z}$) and aligned with the coordinate axes of the sysmte and 
+the mobility term ($\lambda_{w} = \xi_{w}\frac{k_{rw}}{\mu_{w}}$) will take same value for both gridblocks $i$ and $j$ at the face connecting them (see \ref{upwind} below).
+There remains the mobility term $\lambda_{w} = \xi_{w}\frac{k_{rw}}{\mu_{w}}$, which is usually evaluated on face centroid using upwind scheme (value from which flow is coming):
+\begin{equation}
+	\lambda_{w,ij} = 
+	\begin{cases}
+		\lambda_{w,i}, \ \text{if}\ T_{ij}\Phi_{j,i} \leq 0\\
+		\lambda_{w,j}, \ \text{if}\ T_{ij}\Phi_{j,i} > 0
+	\end{cases}
+	\label{upwind}
+\end{equation}
+
+For more details about discretizing the system of PDE equations in \ref{systempde}, the reader is referred to \cite{phdfernandes}, where the full
+peremeability tensor is expanded.
 
 \section{Temporal Discretization}
 The discretization of the time variable is of significant importance to the overall solution procedure.
@@ -112,13 +184,13 @@ the following, if $Y(t)$ represents the state of the system at time $t$:
 	\end{cases}
 \end{equation}\endgroup
 The explicit methods are easier to implement, but their fallout is a severe restriction on timestep size, 
-requiring a small timestep to converge. Implicit methods on the other hand, will result in large systems of 
+requiring a small timestep to be stable. Implicit methods on the other hand, will result in large systems of 
 equations that will take time to solve, but they allow for the selection of large timestep sizes resulting in 
 overall outperformance to the explicit methods. In the reservoir simulation literature, there exists a variety of
 different types of time discretization, with special emphasis on implicit and mixed (implicit on stiff variables and explicit on others) 
 discretization techniques. In \texttt{UTCOMPRS}, extensive research was conducted to implement several formulations. Each formulation treats
-different variables with different degrees of implicitness. A summary of the most important formulations is give in table \ref{formulations}.
-Below an example of discretizing the water equation from the system of PDEs is given for illustration.
+different variables with different degrees of implicitness. A summary of the most important formulations is given in table \ref{formulations}.
+Below is an example of discretizing the water equation from the system of PDEs is given for illustration.
 
 \begin{table}[h]
 	\begin{threeparttable}
@@ -158,15 +230,46 @@ Below an example of discretizing the water equation from the system of PDEs is g
 \end{table}%
 
 \section{Nonlinear Equations Solution Method}
+The flow model in figure \ref{models}, will usually result in a system of nonlinear PDEs. The discretization of this system of PDEs will
+produce a system of nonlinear algebraic equations. The standard method in reservoir simulation to solve this system of nonlinear
+algebraic equations is the Newton's method. For a system of $k$ nonlinear equations described by a vector valued continuously differentiable 
+function $F: \ \mathbb{R}^{k}\Rightarrow\mathbb{R}^{k}$, the Newton's method for finding zeros of the function can be described as:
+\begin{align}
+	J_{F}(x_{n})\delta x = -F(x_{n}) \ \text{and} \ x_{n+1} = x_{n} +\delta x
+\end{align}
+Where, $x_{n}$ is the $n^{th}$ iterate, $x_{n+1}$ is the $n+1$ iterate, $\delta x$ is the difference between the iterates, $J_{F}(x_{n})$ is the
+jacobian matrix of the vector valued function $F$ evaluated at $x_{n}$ and $F(x_{n})$ is the vector valued function evaluated at $x_{n}$.
+In the context of reservoir simulation the vector valued function is the residual $R$, based on the formulation used (see table \ref{formulations}), the variables 
+of this residual function are usually the pressure and concentrations, $p$, $x_{i}$. Implementing the nonlinear solver consists of writing routines that will compute
+the vector valued function $R$ for a specific formulation and its derivatives with respect to the corresponding variables of the formulation. Then constructing a time loop
+that will advance the simulation to the end of simulation time. The time stepping algorithm is an important part of the nonlinear solver, it will also affect the
+overall efficiency of the simulator. A large time step may require many iterations within the Newton's loop, but a small timestep is not preferred since it will advance
+the simulation slowly. Therefore, a balance between the size of timesteps and nonlinear iterations number is required to achieve high performance. 
+
+Ideally, several tests must be performed to check for the convergence of the Newton's method. These are referred to as convergence criteria for residual equations. 
+Most common ones in reservoir simulation are the following:
+
+\begin{enumerate}[label=\color{alizarin}\Roman*.]
+	\item\label{mb_err} Mass or Material Balance Error $MB_{\alpha} = \Delta t \bar{B}_{\alpha} \Big(\sum_{i}\mathcal{R}_{\alpha,i}/\sum_{i}PV_{i}\Big)$.
+	\item\label{cnv_err} Maximum Normalized Residual $CNV_{\alpha} = \Delta t \bar{B}_{\alpha} \max_{i}\Big|\frac{\mathcal{R}_{\alpha,i}}{PV_{i}}\Big|$.
+\end{enumerate}
+The first test (\ref{mb_err}) is called the \textit{Material Balance Check}, the residual is the amount of material change within a gridblock. Therefore, summing over
+all gridblock residuals should result in a value of zero (accounting for sinks or sources). In the equation above, $\alpha$ refers to the phase, $\Delta t$ is the timestep size. 
+$\bar{B}_{\alpha}$ is the formation-volume factor of phase $\alpha$ evaluated at average pressure. $i$ is gridblock subscript and $PV$ is the pore volume used for scaling values to 
+get problem independent number. A meaningful default for $MB_{\alpha}$ is $10^{-7}$.
+
+The second nonlinear convergence check (\ref{cnv_err}) is designed to test that residual values for individual gridblocks is reasonably small. The maximum over all gridblocks of 
+the scaled residual should be typically less than $0.001$.
+\clearpage
 
 \section{Linear System Solution Method}
-The Newton's method can be considered as a linearization tool that produce a large system of linear equations $Ax = b$.
+The Newton's method can be considered as a linearization tool that produces a large system of linear equations $Ax = b$.
 This system of equations must be solved to obtain the vector of increments $x$ that guide the changes to the solution vector.
 The linear solver is the computational engine of the simulator and it is almost always the most taxing part of the simulator
-for all cases. The ability to make various engineering studies rely on the ability to run the simulator several times in a 
+for all cases. The ability to make various engineering studies relies on the ability to run the simulator several times in a 
 reasonable amount of time. Therefore, in the computational science community in general, and in reservoir simulation in particular 
-there is a vast amount of research to develop faster and scalable linear solver. This development continuously take advantage of
-latest software and hardware developements. The history of this topic in numerical analysis is very rich. In reservoir simulation,
+there is a vast amount of research to develop faster and scalable linear solvers. These developments continuously take advantage of
+latest software and hardware technologies. The history of this topic in numerical analysis is very rich. In reservoir simulation,
 some early efforts to tailor a solver for reservoir simulators started with work on direct methods \cite{direct}.
 For large systems, it became very clear that direct methods are not capable of competing with iterative methods.
 One of the first iterative methods to be researched in the reservoir simulation community is the \texttt{Orthomin} method \cite{orthomin}.
@@ -177,4 +280,4 @@ and \texttt{Orthomin} solvers. The focus of research on linear solvers is on com
 The latest type of iterative solvers that is currently being used in almost all reservoir simulators are the Krylov based solvers (\texttt{GMRES} being the most popular \cite{gmres}).
 These Krylov based solvers are covered thoroughly in \cite{saad}. The current efforts of investigations on linear solvers in the reservoir simulation community
 has been on attempts to program the most efficient techniques to run on \textit{Graphics Processing Units} \cite{appleyardgpu, gpunested}.
-This report will present a preconditioner that is meant to be used with a Krylov based solver to accelerate the convergance of linear system solution.
+This report will present a preconditioner that is meant to be used with a Krylov based solver to accelerate the convergence of linear system solution.

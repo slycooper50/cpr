@@ -46,7 +46,7 @@ is detailed in \cite{ix-cpr,ix-tech}. The CPR preconditioning matrix can be writ
 \end{equation}
 The $C$ matrix is a linear operator ($\mathbb{R}^{n_{cell}}\Rightarrow\mathbb{R}^{n_{eqn}\cdot n_{cell}}$) referred to as a restriction operator.
 The operator is formally written as:
-\begin{align*}
+\begin{equation}
 	C = \begin{bmatrix}
 		\mathbf{e_{p}} & & & & \\
 		      & \mathbf{e_{p}} & & &\\ 
@@ -60,7 +60,8 @@ The operator is formally written as:
 		0\\
 		1
 	\end{bmatrix}
-\end{align*}
+	\label{cop}
+\end{equation}
 Where the vector $\mathbf{e_{p}}$ is a unit vector of size $n_{eqn}$.
 The matrix $M$ represents a preconditoiner for the second-stage on the whole system combined. Usually \texttt{ILU(0)} is used.
 Both in \texttt{UTCOMPRS} and \texttt{Intersect IX} the decoupling operator used is $W^{T} = C^{T}DIAG^{-1}(A)$. Where $DIAG(A)$,

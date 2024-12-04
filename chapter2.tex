@@ -7,34 +7,33 @@ residual form as follows\supercite{opmflow}:
 	\label{res_bal}
 \end{equation}
 
-The subscripts, $\alpha$ and $i, j$, refers to phase and gridblock respectively. The terms that 
-constitute the residual are the acumulation term, $A$, the flux term, $u$, and the source or sink term,
+The subscripts, $\alpha$ and $i, j$, refer to phase and gridblock respectively. The terms that 
+constitute the residual are the accumulation term, $A$, the flux term, $u$, and the source or sink term,
 $q$. These terms are functions of the primary variables. The \textit{primary variables} differ based on 
-selected formulation of the flow phenomena. A usual selection, refered to as the \textit{natural variables}, is
+selected formulation of the flow phenomena. A usual selection, referred to as the \textit{natural variables}, is
 $p$, $S_{o}$, $S_{g}$ and $x_{c}$ or $y_{c}$ (component $c$ mole fraction in oil or gas phase). Based on \textit{Gibbs phase rule}, 
-only $n_{c}$ (number of components variables) are needed to describe the physical system\supercite{cao}. The equations and variables selected
-in the solution are refered to as the \textit{primary} equations and variables, the others are refered to as \textit{secondary} equations and variables. 
+a two-phase system with $n_{c}$ (number of components) will require $n_{c}$ variables to describe the physical system\supercite{cao}. The equations and variables selected
+in the solution are referred to as the \textit{primary} equations and variables, the others are referred to as \textit{secondary} equations and variables. 
 
 The efficiency of the linear solver depends on the nature of variables. For hyperbolic systems the \textit{ILU} and \textit{Gauss-Seidel} works well, for
-elliptic systems the \textit{AMG} is more efficent. Since the equations of reservoir simulation are of mixed character, near-hyperbolic in saturation and
-near-elliptic in pressure, a decoupling technique must be deviced to precondition each subsystem accordingly. The decoupling technique that solves a pressure
-subsystem first and then combines the pressure guess in the residual with the remaining near-hyperbolic variables is refered to as \textit{Constrained Pressure Residual} preconditioner.
+elliptic systems the \textit{AMG} is more efficient. Since the equations of reservoir simulation are of mixed character, near-hyperbolic in saturation and
+near-elliptic in pressure, a decoupling technique must be devised to precondition each subsystem accordingly. The decoupling technique that solves a pressure
+subsystem first and then combines the pressure guess in the residual with the remaining near-hyperbolic variables is referred to as \textit{Constrained Pressure Residual} preconditioner.
 
 \section{The Nonlinear Equations Of Reservoir Simulation}
 
-Equation \ref{res_bal}, is refered to as a phase balance (component balance if a compositional formulation is used) relation . It is supplamented by
+Equation \ref{res_bal}, is referred to as a phase balance (component balance if a compositional formulation is used) relation . It is supplemented by
 additional constraints equations to complete the system of equations (ensure number of varialbes is equal to number of equations). These constraint
-equations can be, $\sum_{\alpha}S_{\alpha} = 1$, where  $S_{\alpha}$ is saturatoin of phase $\alpha$, or $f_{\alpha,i} = f_{\beta,i}$, where $f_{\alpha,i}$
+equations can be, $\sum_{\alpha}S_{\alpha} = 1$, where  $S_{\alpha}$ is saturation of phase $\alpha$, or $f_{\alpha,i} = f_{\beta,i}$, where $f_{\alpha,i}$
 is the fugacity of component $i$ in phase $\alpha$ (for compositional formulations). 
 The general form of the nonlinear equations of reservoir simulation can be expressed as\supercite{roy}:
 \begin{equation}
 	\frac{\partial\mathbf{M}}{\partial t} = \nabla \cdot \mathbf{F} + \mathbf{Q}
 	\label{nonlineq}
 \end{equation}
-Where the vector field $\mathbf{M}$ represents mass of the system, $\mathbf{F}$ represents cross flow contributions and $\mathbf{Q}$ represents source/sink terms.
-In its continuous form the equation \ref{nonlineq} with its vector components of each variable, $\mathbf{M}$, $\mathbf{F}$ and $\mathbf{Q}$ can be representing a mass balance 
-for each hydrocarbon component plus water, while the other vectors will be flow contribution (Darcy's law substitution) of each component plus water and $\mathbf{Q}$ 
-vector components are source/sink terms of each component plus water. Hence, the length of each vector field is $N_{c} + 1$. Where, $N_{c}$ is the number of hydrocarbon components.
+Where the vector field $\mathbf{M}$ represents mass of the system, $\mathbf{F}$ represents flux terms (advection and diffusion) contributions and $\mathbf{Q}$ represents source/sink terms.
+The continuous form of the mass balance equation \ref{nonlineq}, is the system of coupled PDEs to be discretized and solved. 
+The length of each vector field is $N_{c} + 1$. Where, $N_{c}$ is the number of hydrocarbon components.
 A detailed description of different physical models to simulate fluid flow in porous media can be found in many resources in the literature, a good starting point is \cite{cao,aziz}.
 Possible values for these vector fields are given below:
 
@@ -67,10 +66,10 @@ Possible values for these vector fields are given below:
 	Q_{N_{c}+1}
 \end{pmatrix}
 \end{equation}
-The dependant variables in this system of PDEs can also be assigned differently based on the model selected. However, one possible selection which usually refered to as natural variables selection\supercite{cao} is: 
-pressure $p$, saturations $S_{p}$ and mole fractions $x_{i}$. From a thermodynamic point of view, the Gibbs phase rule fixes the number variables needed to describe the physical system. This number is $N_{c} + 1$, that is
-number of hydrocarbon components plus one\supercite{cao}. Moreover, further constitutive relations must be satisfied in cases where multiple phases are present or capillary pressure and fugacities must be accounted for in
-compositional models. These equations are refered to as secondary equations, since their variables depend on the primary variables selected in the $N_{c} + 1$ system. Some of these secondary equations can be written as follows:
+The dependant variables in this system of PDEs can also be assigned differently based on the model selected. However, one possible selection which usually referred to as natural variables selection\supercite{cao} is: 
+pressure $p$, saturations $S_{p}$ and mole fractions $x_{i}$. From a thermodynamic point of view, the Gibbs phase rule fixes the number variables needed to describe the physical system. For some formulatoins (see \ref{formulations}), this number is 
+$N_{c} + 1$, that is number of hydrocarbon components plus one\supercite{cao}. Moreover, further constitutive relations must be satisfied in cases where multiple phases are present or capillary pressure and fugacities must be accounted for in
+compositional models. These equations are referred to as secondary equations, since their variables depend on the primary variables selected in the $N_{c} + 1$ system. Some of these secondary equations can be written as follows:
 
 \begin{equation}
 	R_{cap} = P_{c,ow} - (p_{o} - p_{w}) = 0
@@ -89,15 +88,66 @@ compositional models. These equations are refered to as secondary equations, sin
 \end{equation}
 
 \section{Newton's Method As A Nonlinear Solver}
-The standard method to solve the discretized form of the nonlinear PDEs is the Newton-Raphson method. This method 
-will converge, provided the derivative of the function is not equal to zero at the initial guess, in at least
-a quadratic rate. The Method can be written for a system of equations as follows:
+The standard method to solve the discretized form of the nonlinear PDEs is the Newton-Raphson method. 
+Because of its \textit{superconvergence} \cite{hubbard}, Newton's method is the favorite scheme for solving nonlinear equations.
+\textit{Kantorovich's Theorem} guarantess that under appropriate circumstances Newton's method converges.
+To state the theorem, we first make the following definitions:
+\begin{definition}[The length of a matrix]
+	If $A$ is an $n\times m$ matrix, its length $|A|$ is the squre root of the sum of the squares
+	of all its entries:
+		$|A|^{2}$ $\equiv \sum_{i=1}^{n}\sum_{j=1}^{m}a_{i,j}^{2}$.
+\end{definition}
+
+\begin{definition}[Lipschitz condition for a derivative]
+	Let $U \subset \mathbb{R}^{n}$ be open and let $\mathbf{f}: \ U \rightarrow \mathbb{R}^{m}$
+	be a differentiable mapping. The derivative $[\mathbf{Df(x)}]$ satisfies a \textit{Lipschitz condition}
+	on a subset $V \subset U$ with \textit{Lipschitz ratio} $M$ if for all $\mathbf{x,y}\in V$
+	$\Big|[\mathbf{Df(x)}]-[\mathbf{Df(y)}]\Big| \leq M |\mathbf{x-y}|$.
+\end{definition}
+The notation $\mathbf{Df(x)}$ refers to the multi-dimensional derivative of a function, see reference \cite{hubbard} for more details.
+
+\begin{theorem}[Kantorovich's theorem]
+	Let $\mathbf{a_{0}}$ be a point in $\mathbb{R}^{n}$, $U$ an open neighborhood of $\mathbf{a_{0}}$ in $\mathbb{R}^{n}$, 
+	and $\mathbf{\vec{f}}: U \rightarrow \mathbb{R}^{n}$ a differentiable mapping, with its derivative $[\mathbf{D\vec{f}(a_{0})}]$
+	invertible. Define\\
+	\begin{center}
+	$\mathbf{\vec{h}_{0}} \equiv -[\mathbf{D\vec{f}(a_{0})}]^{-1}\mathbf{\vec{f}(a_{0})}, \ \mathbf{a_{1}} \equiv \mathbf{a_{0}} + \mathbf{\vec{h}_{0}}$,  
+	$ U_{1} \equiv B_{|\mathbf{\vec{h}_{0}}|}(\mathbf{a_{1}})$.\\
+	\end{center}
+	If $\overline{U_{1}} \subset U$ and the derivative $[\mathbf{D\vec{f}(x)}]$ satisfies the \textit{Lipschitz} condition 
+	\begin{center}
+	$\Big|[\mathbf{D\vec{f}(u_{1})}]-[\mathbf{D\vec{f}(u_{2})}]\Big| \leq M |\mathbf{u_{1}-u_{2}}|$
+	\end{center}
+	for all points $\mathbf{u_{1}, u_{2}} \in \overline{U_{1}}$, and if the inequality 
+	$|\mathbf{\vec{f}(a_{0})}|\ |[\mathbf{D\vec{f}(a_{0}}]^{-1}|^{2}M \leq \frac{1}{2}$
+	is satisfied, the equation $\mathbf{\vec{f}(x)} = \vec{\mathbf{0}}$ has a unique solution in the closed ball $\overline{U_{1}}$, and \textit{Newton's method} with 
+	initial guess $\mathbf{a_{0}}$ converges to it.
+\end{theorem}
+Note that \textit{Kantorovich's theorem} gives sufficient conditions under which Newton's method will converge. However, these conditions are not necessary and there
+are weaker conditions under which Newton's method will converge. For a proof of \textit{Kantorovich's theorem} and examples where Newton's method does not converge 
+see \cite{hubbard}.
+
+In reservoir simulation, the noninear residual $R$ is the multivalued function which its zeros are being searched for. The variables of this function are usually the pressure and
+concentrations, see \ref{formulations} above for more details on possible sets of variables. 
 \begin{equation}
-J_{R}(\mathbf{x_{n}})(\mathbf{x_{n+1} - x_{n}}) = -F(\mathbf{x_{n}})
+J_{R}(\mathbf{x_{n}})(\mathbf{x_{n+1} - x_{n}}) = -R(\mathbf{x_{n}})
 \end{equation}
+
+The jacobian rows can be reordered to follow two possible schemes. One is the \textit{gridblock ordering} ($p_{1},\ s_{w,1},\ ...,\ p_{n},\ s_{w,n}$) where each block-row is representing a gridblock. The other is 
+\textit{variables ordering} ($p_{1},\ p_{2},\ ...,\ p_{n},\ s_{w,1},\ ...,\ s_{w,n}$), where each block-row represents all equations for a specific variable. If the jacobian is reordered using the latter scheme, we 
+get the following matrix structure which we use in discussing the decoupling procedures:
 
 \begin{equation}
 	Ax = 
+\begin{bmatrix}
+	\frac{\partial\mathcal{R}_{p}}{\partial p}& \frac{\partial\mathcal{R}_{p}}{\partial s}\\
+	\frac{\partial\mathcal{R}_{s}}{\partial p}& \frac{\partial\mathcal{R}_{s}}{\partial s}
+\end{bmatrix}
+\begin{bmatrix}
+	x_{p} \\
+	x_{s}
+\end{bmatrix}
+=
 \begin{bmatrix}
 	A_{pp} & A_{ps}\\
 	A_{sp} & A_{ss}
@@ -117,8 +167,8 @@ b
 
 \subsection{The Jacobian Matrix}
 During the early stages of running a simulator, there has to be part of the software responsible for
-building what's refered to as a connectivity graph. The connectivity graph is an essential data structure used
-when constructing the jacobian matrix. It basically contains information about which gridblock variables will effect
+building what's referred to as a connectivity graph. The connectivity graph is an essential data structure used
+when constructing the jacobian matrix. It basically contains information about which gridblock variables will affect
 another gridblock variables. That is which gridblock is connected to which gridblock. This information depends on the
 way gridblocks are ordered and numbered. It also depends on whether the simulation model contains non-neighboring connections
 like wells or fractures. It also depends on the dimensionality of the simulation model. For an example of a jacobian matrix for a 
@@ -127,7 +177,7 @@ simple one dimensional simulation grid with no unusual connections see figure \r
 \begin{figure}[H]
 %\raggedright
 \resizebox{9.5cm}{!}{\input{tikz/jacobian.tikz}}
-\caption{Example of a Jacobian matrix constructed for three components one dimensional problem.}
+\caption{Example of a Jacobian matrix constructed for three components one dimensional problem. Using gridblock-ordering scheme.}
 \label{jacobian}
 \end{figure}
 Since we are solving a system of nonlinear PDEs with more than one variable being solved for, each entry of the matrix is a block of size
@@ -142,8 +192,8 @@ The CPR procedure can be summarized by the following two steps:
 The decoupling process is an essential step in reducing the coupling between the pressure and the other variables.
 The effectiveness of the preconditioner will vary based on the decoupling technique used. Therefore, in the research
 literature on CPR preconditioner, there are a variety of decoupling techniques that each will result in a different pressure
-subsystem and therefore different solution times. Preconditioners that results from the application of two linear operators
-$P_{1}^{-1}$ and $P_{2}^{-1}$ are refered to as two-stage preconditioners. In general, if matrix $A$ is the original jacobian
+subsystem and therefore different solution times. Preconditioners that result from the application of two linear operators
+$P_{1}^{-1}$ and $P_{2}^{-1}$ are referred to as two-stage preconditioners. In general, if matrix $A$ is the original jacobian
 matrix of the system, a two stage preconditioner can be written as:
 \begin{equation}
 	P^{-1} = P_{2}^{-1}(I-AP_{1}^{-1}) + P_{1}^{-1}
@@ -152,7 +202,7 @@ In particular, the CPR preconditioner can be written as:
 \begin{equation}
 	M_{CPR}^{-1} = M^{-1}(I - AC(W^{T}AC)^{-1}W^{T}) + C(W^{T}AC)^{-1}W^{T}
 \end{equation}
-The decoupling techniques for CPR are summarized in table \ref{dectec} and expounded in below sections.
+The decoupling techniques for CPR are summarized in table \ref{dectec} and expounded below sections.
 
 \begin{table}[h!]
 \caption{List of pressure decoupling operators used in CPR algorithm.}
@@ -201,7 +251,7 @@ $\delta_{x}^{i} = \begin{cases}
 \end{table}
 
 \subsection{Quasi-Implicit Pressure Explicit Saturation (QIMPES)}
-This decoupling technique was first introduced in \cite{IPARSdecoupling}. It is inspired by the famous IMPEC formulation as imlemented by Coats in \cite{impescoats}.
+This decoupling technique was first introduced in \cite{IPARSdecoupling}. It is inspired by the famous IMPEC formulation as implemented by Coats in \cite{impescoats}.
 In this decoupling technique, there are three main assumptions made with regards to the system being solved:
 \begin{assumption}
 	The solution vector is ${Y_{j}}, \ (j=1,...,n+m)$. With $Y_{1}$, referring to the pressure variable, and the remaining variables being
@@ -235,16 +285,67 @@ In this decoupling technique, there are three main assumptions made with regards
 
 The matrix $A$ is the resulting matrix after a Schur Complement to reduce the size to $n_{c}\times n_{c}$, by eliminating the constraints equations.
 Note that in the original paper of QIMPES, the algorithm is reduced to preconditioning of the pressure subsystem only. The typical two-stage preconditioning
-(saturation with pressure corrected) is refered there as \textit{Combinative Technique}. These combinative techniques rely on a feedback from the pressure preconditioner
+(saturation with pressure corrected) is referred there as \textit{Combinative Technique}. These combinative techniques rely on a feedback from the pressure preconditioner
 and produce a guess that accounts for pressure-saturation interaction.
 
 \subsection{Alternate Block Factorization (ABF)}
 This method was introduced firstly in the semi-conductors simulation industry in 1989\supercite{Bank1989}. Like other decoupling strategies the
-Alternate Block Factorization goal is to reduce the coupling between variables in the system. The researchers differentiates between two kinds
-of coupling. The first is refered to as \textit{intra-grid}, the other is \textit{intra-equation}. The intra-grid is the coupling between 
+Alternate Block Factorization goal is to reduce the coupling between variables in the system. The researchers differentiate between two kinds
+of coupling. The first is referred to as \textit{intra-grid}, the other is \textit{intra-equation}. The intra-grid is the coupling between 
 variables that results from the discretization of differential equations being solved on a spatial domain with a definite grid connectivity.
-The intra-equation, is the coupling between variables that results from the physics of the coupled system of PDEs.
+The intra-equation is the coupling between variables that results from the physics of the coupled system of PDEs.
 The stronger the coupling between variables the more efficient decoupling techniques will be on solving the problem than other methods.
 The first to apply the ABF method in reservoir simulation is Klie, et al\supercite{klie}, in their investigations of two-stage preconditioners. 
-In the original paper of ABF decoupling technique, the authors assume a system of $m$ coupld PDEs in a mesh of size $\nu$.
-
+In the original paper of ABF decoupling technique, the authors assume a system of $m$ coupled PDEs in a mesh of size $\nu$.
+The method is attractive for its simplicity in terms of description and implementation. The computational work is scalable with respect to 
+problem size $\nu$ and submatrices block size $m$. The decoupling procedure consists of the inversion of $\nu$ matrices (sub-blocks along the main diagonal) of size $m$. 
+The ABF works by reducing the effect of coupling by canceling the main diagonals of matrices off the main diagonal in a variable-ordered jacobian.
+To explain this further, consider the jacobian of a two-phase system with variables $p$ and $S_{w}$ per gridblock. Moreover, assume we have a simulation grid of size $\nu\times\nu$.
+Then the variable-ordered jacobian can be presented by:
+\begin{align}
+	Ax = 
+\begin{bmatrix}
+	A_{pp} & A_{ps}\\
+	A_{sp} & A_{ss}
+\end{bmatrix}
+\begin{bmatrix}
+	x_{p} \\
+	x_{s}
+\end{bmatrix}
+=
+\begin{bmatrix}
+	b_{p} \\
+	b_{s}
+\end{bmatrix}
+\end{align}
+The matrix $A$ is of size $m\nu\times m\nu$, the vector $x$ is of size $m\nu$. Where $m$ in this particular case equals $2$.
+Let the matrix $D$ be defined as follows:
+\begin{align}
+	D=
+\begin{bmatrix}
+	\diag(A_{pp}) & \diag(A_{ps})\\
+	\diag(A_{sp}) & \diag(A_{ss})
+\end{bmatrix} =
+\begin{bmatrix}
+	D_{pp} & D_{ps}\\
+	D_{sp} & D_{ss}
+\end{bmatrix}
+\in \mathbb{R}^{2\nu\times2\nu}
+\end{align}
+The ABF-postconditioned matrix is:
+\begin{align}
+	AD^{-1}=
+\begin{bmatrix}
+	A_{pp}D_{ss}-A_{ps}D_{sp} & A_{ps}D_{pp}-A_{pp}D_{ps}\\
+	A_{sp}D_{ss}-A_{ss}D_{sp} & A_{ss}D_{pp}-A_{sp}D_{ps}
+\end{bmatrix}
+\begin{bmatrix}
+	\delta & \delta\\
+	\delta & \delta
+\end{bmatrix}
+\end{align}
+where $\delta = (D_{pp}D_{ss}-D_{sp}D_{ps})^{-1}$. 
+Since the matrix $A_{ps}D_{pp}$ has the same diagonal elements as the matrix $A_{pp}D_{ps}$,
+and the matrix $A_{sp}D_{ss}$ has the same diagonal elements as the matrix $A_{ss}D_{sp}$, then
+all diagonal elements of block matrices not on the diagonal of the ABF-postconditioned matrix $AD^{-1}$
+must be zero. This would decouple secondary variables dependence for each gridblock.

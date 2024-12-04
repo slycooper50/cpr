@@ -1,4 +1,5 @@
 \chapter{Nomenclature}
+\label{nomenclature}
 \noindent\fbox{%
 \hfill\parbox{\dimexpr\textwidth-15pt}{%
 \vspace{-\topskip}\small
@@ -8,60 +9,46 @@
   \begin{tabbing}
     \textbf{\large Nomenclature}\\[2ex]
     \textbf{List of variables:}\\
-    \entry[\quad\=]{$u$,$\upsilon$}{Velocity components along $x$-$y$
-    axes (\si{m\per s})}
-    \entry{$U_{w}$}{Velocity of the wall along the $x$-axis (\si{m\per
-    s})}
-    \entry{$x,y$}{Cartesian coordinates measured along the stretching sheet (\si{m})}
-    \entry{$B(x)$}{Magnetic field strength (\si{A.m^{-1}})}
-    \entry{$C$}{Nanoparticle concentration (\si{mol.m^{-3}})}
-    \entry{$C_{fx}$}{Skin-friction coefficient (\si{Pascal})}
-    \entry{$Nu_{x}$}{Nusselt number}
-    \entry{$Sh_{x}$}{Sherwood number}
-    \entry{$C_{w}$}{Nanoparticles concentration at the stretching surface (\si{mol.m^{-3}})}
-    \entry{$C_{\infty}$}{Nanoparticle concentration far from the sheet (\si{mol.m^{-3}})}
-    \entry{$C_{p}$}{Specific heat capacity at constant pressure (\si{J.kg^{-1}.K})}
-    \entry{$D_{T}$}{Brownian diffusion coefficient}
-    \entry{$D_{b}$}{Thermophoresis diffusion coefficient}
-    \entry{Ec}{Eckert number}
-    \entry{$a$}{Constant parameter}
-    \entry{$n$}{Nonlinear stretching parameter}
-    \entry{$f$}{Dimensionless stream function}
-    \entry{$k$}{Thermal conductivity (\si{W.m^{-1}.K^{-1}})}
-    \entry{$S$}{Suction/injection parameter}
-    \entry{$Le$}{Lewis number}
-    \entry{$M$}{Magnetic parameter}
-    \entry{$Q_{0}$}{Dimensional heat generation parameter}
-    \entry{$Nb$}{Brownian motion parameter}
-    \entry{$Nt$}{Thermophoresis parameter}
-    \entry{$Pr$}{Prandtl number}
-    \entry{$Q$}{Heat generation/absorption parameter}
-    \entry{$K_{1}$}{Velocity slip factor}
-    \entry{$K_{2}$}{Thermal slip factor}
-    \textbf{Greek Symbols:}\\
-    \entry{$\alpha$}{Thermal diffusivity (\si{m^{2}\per s})}
-    \entry{$\eta$}{Dimensionless similarity variable}
-    \entry{$\gamma$}{concentration parameter}
-    \entry{$\mu$}{Dynamic viscosity of the base fluid (\si{kg\per m.s})}
-    \entry{$\upsilon$}{Kinematic viscosity (\si{m^{2}.s^{-1}})}
-    \entry{$\rho_{f}$}{Density of the fluid (\si{kg.m^{-3}})}
-    \entry{$\rho_{p}$}{Density of the nanoparticle (\si{kg.m^{-3}})}
-    \entry{$\tau$}{The ratio of the nanoparticle heat capacity the base fluid heat Capacity}
-    \entry{$(\rho c)_{f}$}{Heat capacity of the base fluid (\si{kg\per
-    m.s^{2}})}
-    \entry{$(\rho c)_{p}$}{Heat capacity of the nanoparticle
-    (\si{kg\per m.s^{2}})}
-    \entry{$\theta$}{Dimensionless temperature (\si{K})}
-    \entry{p}{pressure (\si{N\per m^{2}})}
-    \entry{$\phi$}{Nanoparticle volume fraction}
-    \entry{$\phi_{W}$}{Nanoparticle volume fraction at wall temperature}
-    \entry{$\phi_{\infty}$}{Ambient nanoparticle volume fraction}
-    \entry{$\lambda$}{Velocity slip parameter}
-    \entry{$\delta$}{Thermal slip parameter}
-    \textbf{Sub Scripts:}\\
-    \entry{$f$}{Fluid}
-    \entry{$\emph{W}$}{Condition on the sheet}
-    \entry{$\infty$}{Ambient Conditions}
+    \entry[\quad\=]{$V_{b}$}{Bulk Volume.}
+    \entry{$N_{k}$}{Number of moles for chemical component $k$.}
+    \entry{$t$}{Time.}
+    \entry{$n_{p}$}{Number of phases present in gridblock.}
+    \entry{$x_{kj}$}{Mole fraction of component $k$ in phase $j$}
+    \entry{$\xi_{j}$}{Mole density of phase $j$.}
+    \entry{$k_{rj}$}{Relative permeability of phase $j$.}
+    \entry{$\mu_{j}$}{Viscosity of phase $j$.}
+    \entry{$\tensor{K}$}{Permeability tensor.}
+    \entry{$\Phi_{j}$}{Gravitational potential of phase $j$.}
+    \entry{$\Phi_{w,i}$}{Gravitational potential of water in gridblock $i$.}
+    \entry{$\phi$}{porosity.}
+    \entry{$S_{j}$}{Saturation of phase $j$.}
+    \entry{$\tensor{\Lambda}_{kj}$}{Dispersion tensor of component $k$ in phase $j$.}
+    \entry{$q_{k}$}{source or sink term for chemical component $k$.}
+    \entry{$\vec{A}_{s}$}{Surface area vector.}
+    \entry{$n_{f}$}{Number of neighboring faces.}
+    \entry{$\Phi_{i,j}$}{Gravitational potential of face ceneter between gridblock $i$ and $j$.}
+    \entry{$\vec{c}_{i,j}$}{Vector from cell $i$ center to face center between gridblock $i$ and $j$.}
+    \entry{$\vec{n}_{i,j}$}{Unit vector perpendicular to face area pointing from gridblock $i$ to gridblock $j$.}
+    \entry{$T_{i,j}$}{Half-transmissibility between gridblock $i$ and $j$.}
+    \entry{$T_{ij}$}{Transmissibility between gridblock $i$ and $j$.}
+    \entry{$A_{i,j}$}{Face area between gridblock $i$ and $j$.}
+    \entry{$\lambda_{w,ij}$}{Upwind mobility of water for gridblock $i$ and $j$.}
+    \entry{$K_{xx},\ K_{xy},\ ...,\ K_{zz}$}{\hspace{2.5cm} Permeability tensor components in a cartesian system.}
+    \entry{$J_{F}(x_{n})$}{\hspace{0.5cm}Jacobian matrix of function $F$ evaluated at point $x_{n}$.}
+    \entry{$MB_{\alpha}$}{\hspace{0.2cm}Material balance error for phase $\alpha$.}
+    \entry{$\bar{B}_{\alpha}$}{Formation-volume factor of phase $\alpha$ evaluated at average pressure.}
+    \entry{$\mathcal{R}_{\alpha,i}$}{Residual for phase $\alpha$ evaluated at cell $i$.}
+    \entry{$A_{\alpha,i}$}{Accumulation term for phase $\alpha$ evaluated at cell $i$.}
+    \entry{$u_{\alpha,ij}$}{Flux for phase $\alpha$ from gridblock $i$ to gridblock $j$.}
+    \entry{$f_{\alpha,i}$}{Fugacity of component $i$ in phase $\alpha$.}
+    \entry{$N_{p}$}{Total number of phases.}
+    \entry{$\rho_{p}$}{Density of phase $p$.}
+    \textbf{CPR Specific:}\\
+	  \entry{$P^{-1}$}{General two-stage preconditioner.}
+	  \entry{$A$}{General matrix to be preconditioned.}
+	  \entry{$C$}{A restriction operator used to extract the pressure subsystem \ref{cop}.}
+	  \entry{$W^{T}$}{$= C^{T}\cdot DIAG^{-1}(A)$.}
+	  \entry{$A_{lm}$}{Sublock of derivatives of $l$ equations with respect to $m$ variable.}
   \end{tabbing}
 \end{multicols}
 }%
