@@ -85,49 +85,35 @@ The details of the reservoir being simulated are shown in Table \ref{case1}.
 
 \begin{figure}
 \centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case1/cpr/cpu_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case1_cpu_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case1/ilu/cpu_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case1_cpu_ilu}
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case1/cpu_time.pdf}
+   \caption{}
+   \label{case1_cpu}
 \end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case1/cpr/its_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case1_its_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case1/ilu/its_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case1_its_ilu}
+
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case1/its_time.pdf}
+   \caption{}
+   \label{case1_its}
 \end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case1/cpr/matbalerr_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case1_matbalerr_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case1/ilu/matbalerr_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case1_matbalerr_ilu}
-\end{subfigure}
-%\caption{A comparison for \texttt{Case 1} for the two different preconditioning methods.}
-\caption[caption]{A comparison for \texttt{Case 1} for the two different preconditioning methods.\\\hspace{\textwidth}
-		\cref{case1_cpu_cpr,case1_cpu_ilu}: CPU run time against simulation time. \\\hspace{\textwidth}
-		\cref{case1_its_cpr,case1_its_ilu}: Linear iterations against simulation time.\\\hspace{\textwidth}
-		\cref{case1_matbalerr_cpr,case1_matbalerr_ilu}: Material balance error against simulation time.}
-\label{case1_param}
+
+\caption[caption]{A comparison for \texttt{Case 1} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{case1_cpu}: CPU run time against simulation time. \\\hspace{\textwidth}
+	\cref{case1_its}: Linear iterations against simulation time.\\\hspace{\textwidth}}
 \end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case1/matbalerr_time.pdf}
+   \caption{}
+   \label{case1_matbalerr}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 1} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{case1_matbalerr}: Material balance error against simulation time. \\\hspace{\textwidth}}
+\end{figure}
+
 \clearpage
 
 \section{Case 2}
@@ -185,48 +171,35 @@ The details of the reservoir being simulated are shown in Table \ref{case1}.
 
 \begin{figure}
 \centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case2/cpr/cpu_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case2_cpu_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case2/ilu/cpu_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case2_cpu_ilu}
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case2/cpu_time.pdf}
+   \caption{}
+   \label{case2_cpu}
 \end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case2/cpr/its_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case2_its_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case2/ilu/its_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case2_its_ilu}
+
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case2/its_time.pdf}
+   \caption{}
+   \label{case2_its}
 \end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case2/cpr/matbalerr_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case2_matbalerr_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case2/ilu/matbalerr_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case2_matbalerr_ilu}
-\end{subfigure}
-\caption[caption]{A comparison for \texttt{Case 2} for the two different preconditioning methods.\\\hspace{\textwidth}
-		\cref{case2_cpu_cpr,case2_cpu_ilu}: CPU run time against simulation time. \\\hspace{\textwidth}
-		\cref{case2_its_cpr,case2_its_ilu}: Linear iterations against simulation time.\\\hspace{\textwidth}
-		\cref{case2_matbalerr_cpr,case2_matbalerr_ilu}: Material balance error against simulation time.}
-\label{case2_param}
+
+\caption[caption]{A comparison for \texttt{Case 2} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{case2_cpu}: CPU run time against simulation time. \\\hspace{\textwidth}
+	\cref{case2_its}: Linear iterations against simulation time.\\\hspace{\textwidth}}
 \end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case2/matbalerr_time.pdf}
+   \caption{}
+   \label{case2_matbalerr}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 2} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{case2_matbalerr}: Material balance error against simulation time. \\\hspace{\textwidth}}
+\end{figure}
+
 \clearpage
 
 \section{Case 3}
@@ -314,48 +287,35 @@ The details of the reservoir being simulated are shown in Table \ref{case1}.
 
 \begin{figure}
 \centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case3/cpr/cpu_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case3_cpu_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case3/ilu/cpu_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case3_cpu_ilu}
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case3/cpu_time.pdf}
+   \caption{}
+   \label{case3_cpu}
 \end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case3/cpr/its_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case3_its_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case3/ilu/its_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case3_its_ilu}
+
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case3/its_time.pdf}
+   \caption{}
+   \label{case3_its}
 \end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case3/cpr/matbalerr_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case3_matbalerr_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case3/ilu/matbalerr_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case3_matbalerr_ilu}
-\end{subfigure}
-\caption[caption]{A comparison for \texttt{Case 3} for the two different preconditioning methods.\\\hspace{\textwidth}
-		\cref{case3_cpu_cpr,case3_cpu_ilu}: CPU run time against simulation time. \\\hspace{\textwidth}
-		\cref{case3_its_cpr,case3_its_ilu}: Linear iterations against simulation time.\\\hspace{\textwidth}
-		\cref{case3_matbalerr_cpr,case3_matbalerr_ilu}: Material balance error against simulation time.}
-\label{case3sg}
+
+\caption[caption]{A comparison for \texttt{Case 3} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{case3_cpu}: CPU run time against simulation time. \\\hspace{\textwidth}
+	\cref{case3_its}: Linear iterations against simulation time.\\\hspace{\textwidth}}
 \end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case3/matbalerr_time.pdf}
+   \caption{}
+   \label{case3_matbalerr}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 3} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{case3_matbalerr}: Material balance error against simulation time. \\\hspace{\textwidth}}
+\end{figure}
+
 \clearpage
 
 \section{Case 4}
@@ -366,7 +326,7 @@ This model simulates water flooding in a fractured reservoir. All wells are cont
 \begin{adjustbox}{width=0.7\textwidth}
     \begin{threeparttable}
     \caption{\textbf{Case 4 Reservoir Parameters\supercite{phdfernandes}.}}
-    \label{case4}
+    \label{case8}
         \begin{tabular}{l r }
             \toprule
             Simulatoin Parameters & Value\\
@@ -393,7 +353,7 @@ This model simulates water flooding in a fractured reservoir. All wells are cont
 
 \begin{table}[h!]
    \caption{Comparison parameters for \texttt{Case 4}.}
-   \label{case4-tab}
+   \label{case8-tab}
    \small
    \centering
    \begin{tabular}{lcc}
@@ -422,7 +382,7 @@ This model simulates water flooding in a fractured reservoir. All wells are cont
   \caption{\texttt{GMRES-ILU(0)} preconditioner}
 \end{subfigure}
 \caption{A comparison of \texttt{Case 4} water saturation $S_{w}$ distribution for the two different preconditioning methods after 1000days of simulation.}
-\label{case4sw}
+\label{case8sw}
 \end{figure}
 
 \begin{figure}
@@ -438,62 +398,48 @@ This model simulates water flooding in a fractured reservoir. All wells are cont
   \caption{\texttt{GMRES-ILU(0)} preconditioner}
 \end{subfigure}
 \caption{A comparison of \texttt{Case 4} water saturation $S_{w}$ bottom layer for the two different preconditioning methods after 10000 days of simulation.}
-\label{case4swbl}
+\label{case8swbl}
 \end{figure}
 
 \begin{figure}
 \centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case8/cpr/cpu_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case8_cpu_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case8/ilu/cpu_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case8_cpu_ilu}
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case8/cpu_time.pdf}
+   \caption{}
+   \label{case4_cpu}
 \end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case8/cpr/its_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case8_its_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case8/ilu/its_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case8_its_ilu}
+
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case8/its_time.pdf}
+   \caption{}
+   \label{case4_its}
 \end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case8/cpr/matbalerr_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case8_matbalerr_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case8/ilu/matbalerr_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case8_matbalerr_ilu}
-\end{subfigure}
-\caption[caption]{A comparison for \texttt{Case 4} for the two different preconditioning methods.\\\hspace{\textwidth}
-		\cref{case8_cpu_cpr,case8_cpu_ilu}: CPU run time against simulation time. \\\hspace{\textwidth}
-		\cref{case8_its_cpr,case8_its_ilu}: Linear iterations against simulation time.\\\hspace{\textwidth}
-		\cref{case8_matbalerr_cpr,case8_matbalerr_ilu}: Material balance error against simulation time.}
-\label{case8sg}
+
+\caption[caption]{A comparison for \texttt{Case 4} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{case4_cpu}: CPU run time against simulation time. \\\hspace{\textwidth}
+	\cref{case4_its}: Linear iterations against simulation time.\\\hspace{\textwidth}}
 \end{figure}
-\clearpage
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case8/matbalerr_time.pdf}
+   \caption{}
+   \label{case4_matbalerr}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 4} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{case4_matbalerr}: Material balance error against simulation time. \\\hspace{\textwidth}}
+\end{figure}
+
 
 \section{Case 5}
 This model is simillar to the previous case instead of flooding with water, gas is used instead. Parameters of the reservoir
-are the same as the previous case \ref{case4}.
+are the same as the previous case \ref{case8}.
 
 \begin{table}[h!]
    \caption{Comparison parameters for \texttt{Case 5}.}
-   \label{case5-tab}
+   \label{case9-tab}
    \small
    \centering
    \begin{tabular}{lcc}
@@ -522,53 +468,40 @@ are the same as the previous case \ref{case4}.
   \caption{\texttt{GMRES-ILU(0)} preconditioner}
 \end{subfigure}
 \caption{A comparison of \texttt{Case 5} gas saturation $S_{g}$ distribution for the two different preconditioning methods after 1000days of simulation.}
-\label{case5sg}
+\label{case9sg}
 \end{figure}
 
 \begin{figure}
 \centering
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case9/cpr/cpu_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case9_cpu_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case9/ilu/cpu_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case9_cpu_ilu}
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case9/cpu_time.pdf}
+   \caption{}
+   \label{case5_cpu}
 \end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case9/cpr/its_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case9_its_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case9/ilu/its_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case9_its_ilu}
+
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case9/its_time.pdf}
+   \caption{}
+   \label{case5_its}
 \end{subfigure}
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case9/cpr/matbalerr_time.png_reduced.png}
-  \caption{\texttt{CPR-AMG} preconditioner.}
-	\label{case9_matbalerr_cpr}
-\end{subfigure}%
-\begin{subfigure}{.5\textwidth}
-  \centering
-  \includegraphics[width=1.1\linewidth]{figures/case9/ilu/matbalerr_time.png_reduced.png}
-  \caption{\texttt{GMRES-ILU(0)} preconditioner}
-	\label{case9_matbalerr_ilu}
-\end{subfigure}
-\caption[caption]{A comparison for \texttt{Case 5} for the two different preconditioning methods.\\\hspace{\textwidth}
-		\cref{case9_cpu_cpr,case9_cpu_ilu}: CPU run time against simulation time. \\\hspace{\textwidth}
-		\cref{case9_its_cpr,case9_its_ilu}: Linear iterations against simulation time.\\\hspace{\textwidth}
-		\cref{case9_matbalerr_cpr,case9_matbalerr_ilu}: Material balance error against simulation time.}
-\label{case9sg}
+
+\caption[caption]{A comparison for \texttt{Case 5} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{case5_cpu}: CPU run time against simulation time. \\\hspace{\textwidth}
+	\cref{case5_its}: Linear iterations against simulation time.\\\hspace{\textwidth}}
 \end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/case9/matbalerr_time.pdf}
+   \caption{}
+   \label{case5_matbalerr}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 5} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{case5_matbalerr}: Material balance error against simulation time. \\\hspace{\textwidth}}
+\end{figure}
+
 \clearpage
 
 \section{Case 6}
@@ -584,7 +517,7 @@ could not finish the simulation in less than a day for the ($320\times320$) scen
 \begin{adjustbox}{width=0.5\textwidth}
     \begin{threeparttable}
     \caption{\textbf{Case 4 Reservoir Parameters\supercite{phdfernandes}.}}
-    \label{case4}
+    \label{viscous}
         \begin{tabular}{l r }
             \toprule
             Simulatoin Parameters & Value\\
@@ -638,7 +571,7 @@ could not finish the simulation in less than a day for the ($320\times320$) scen
   \caption{\texttt{GMRES-ILU(0)} preconditioner}
 \end{subfigure}
 \caption{A comparison of \texttt{Case 6} gas saturation $S_{g}$ distribution for the two different preconditioning methods after 2.5 days of simulation time.}
-\label{case5sg}
+\label{viscoussg}
 \end{figure}
 
 \begin{figure}[h!]
@@ -654,6 +587,97 @@ could not finish the simulation in less than a day for the ($320\times320$) scen
   \caption{\texttt{GMRES-ILU(0)} preconditioner}
 \end{subfigure}
 \caption{A comparison of \texttt{Case 6} CO$_{2}$ saturation $S_{g}$ distribution for the two different preconditioning methods after 2.5 days of simulation time.}
-\label{case5sg}
+\label{viscoussg}
 \end{figure}
 
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/viscous/320x320/cpu_time.pdf}
+   \caption{}
+   \label{viscouse320_cpu}
+\end{subfigure}
+
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/viscous/320x320/its_time.pdf}
+   \caption{}
+   \label{viscous320_its}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 5} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{viscous320_cpu}: CPU run time against simulation time. \\\hspace{\textwidth}
+	\cref{viscous320_its}: Linear iterations against simulation time.\\\hspace{\textwidth}}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/viscous/320x320/matbalerr_time.pdf}
+   \caption{}
+   \label{viscous320_matbalerr}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 5} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{viscous320_matbalerr}: Material balance error against simulation time. \\\hspace{\textwidth}}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/viscous/80x80/cpu_time.pdf}
+   \caption{}
+   \label{viscouse80_cpu}
+\end{subfigure}
+
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/viscous/80x80/its_time.pdf}
+   \caption{}
+   \label{viscous80_its}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 5} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{viscous80_cpu}: CPU run time against simulation time. \\\hspace{\textwidth}
+	\cref{viscous80_its}: Linear iterations against simulation time.\\\hspace{\textwidth}}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/viscous/80x80/matbalerr_time.pdf}
+   \caption{}
+   \label{viscous80_matbalerr}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 5} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{viscous80_matbalerr}: Material balance error against simulation time. \\\hspace{\textwidth}}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/viscous/20x20/cpu_time.pdf}
+   \caption{}
+   \label{viscouse20_cpu}
+\end{subfigure}
+
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/viscous/20x20/its_time.pdf}
+   \label{viscous20_its}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 5} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{viscous20_cpu}: CPU run time against simulation time. \\\hspace{\textwidth}
+	\cref{viscous20_its}: Linear iterations against simulation time.\\\hspace{\textwidth}}
+\end{figure}
+
+\begin{figure}
+\centering
+\begin{subfigure}[b]{\textwidth}
+   \includegraphics[width=1\linewidth]{figures/viscous/20x20/matbalerr_time.pdf}
+   \caption{}
+   \label{viscous20_matbalerr}
+\end{subfigure}
+
+\caption[caption]{A comparison for \texttt{Case 5} for \texttt{CPR-AMG} against \texttt{GMRES-ILU(0)}.\\\hspace{\textwidth}
+	\cref{viscous20_matbalerr}: Material balance error against simulation time. \\\hspace{\textwidth}}
+\end{figure}

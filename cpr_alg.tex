@@ -85,7 +85,7 @@ on the system original residual $r$.
         \begingroup
         \color{red}
 	    \textcolor{blue}{\ttfamily{\slash/ First Stage Preconditioner}}\\
-	    $\mathbf{r_{p} = W^{T}R}$ \hspace{1cm}\tcp{Restric the residual to the prssure system.}
+	    $\mathbf{r_{p} = W^{T}R}$ \hspace{1cm}\tcp{Restric the residual to the pressure system.}
 	    $\mathbf{\mathbf{A_{p} x_{p}} = \mathbf{(W^{T}AC)x_{p}}=\mathbf{r_{p}}}$ \hspace{0cm}\tcp{Solve using \texttt{GMRES} with Nested-Factorization.}
 	    \textcolor{black}{\texttt{call GMRES}} \hspace{2cm}$\textcolor{black}{\longleftarrow}$ \textcolor{NavyBlue}{\texttt{inner GMRES}}
             \hfill\\
