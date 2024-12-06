@@ -27,7 +27,7 @@ Moreover, the boundary conditions for the differential equations describing the 
 The wells are also routinely modeled in the simulator using algebraic equations to describe inflow performance of the wells. One of the well models
 main objectives is to relate the reservoir gridblock pressure to the well bottom hole pressure. More sophisticated well models handle cross flow and
 multilateral, horizontal and slanted wells. Reservoir simulators can also include additional models to simulate networks of fractures, surface facilities,
-enhanced oil recovery and geomechanics. The main standard models that a simple Black-Oil reservoir simulator must incorporate are summarized in figure \ref{models}.
+enhanced oil recovery and geomechanics. The main standard models that a simple Black-Oil reservoir simulator must incorporate are summarized in Figure \ref{models}.
 
 The inner components of reservoir simulators are more or less universal. Each simulator has to support a 
 gridding infrastructure to support discretization of the simulation domain, a nonlinear solver (usually based on Newton's Method) to 
@@ -42,7 +42,7 @@ Corner-Point Geometry. The third \texttt{Multi-Purpose Simulator (MPS)} is focus
 various recovery processes. The modeling group maintains the development of all three simulators. 
 
 The overall algorithm of a reservoir simulator can be simplified by focusing on the essential components. These will be found in every reservoir simulator, whether
-its focused on research or industrial activities. The simulation process is depicted in figure \ref{simulator}. The process commences by parsing the input files that describe the
+its focused on research or industrial activities. The simulation process is depicted in Figure \ref{simulator}. The process commences by parsing the input files that describe the
 reservoir and boundary conditions as specified by wells or aquifers. Then an algorithm to build the simulation grid is run and connectivity graph is constructed. Then the three main
 loops of the simulator are entered. These loops consist of a time loop that will finish once the end of specified simulation time is reached. The second inner loop is Newtonian loop,
 which will end once the set of nonlinear equations are solved with acceptable tolerance. The third inner loop is the linear solver loop that will finish once the linear system of equations
@@ -87,7 +87,7 @@ The formulation used in \texttt{UTCOMPRS} can be described by the following syst
 	\end{cases}
 \label{systempde}
 \end{equation}\endgroup
-By taking an integral of the equation \ref{systempde} over a control volume $V_{i}$ (using the water equation for simplicity), the right hand side can be converted to surface integral using \textit{Guass's theorem}:
+By taking an integral of the equation \ref{systempde} over a control volume $V_{i}$ (using the water equation for simplicity), the right hand side can be converted to surface integral using \textit{Gauss's theorem}:
 \begin{equation}
 \int_{V_{i}}\Big[\nabla \cdot \Big(\xi_{w}\frac{k_{rw}}{\mu_{w}}\tensor{K}\cdot \nabla\Phi_{w}\Big) - \frac{q_{w}}{V_{i}}\Big] \ dV = \int_{S_{i}}\Big(\xi_{w}\frac{k_{rw}}{\mu_{w}}\tensor{K}\cdot \nabla\Phi_{w}\Big)\cdot \vec{dA} - q_{w,i}
 \end{equation}
@@ -103,7 +103,7 @@ To further approximate the surface integral, a summation over the control volume
 \caption{Two-Point Flux-Approximation.}\label{tpfa-tikz}
 \end{figure}
 
-Now the approximation of the gradient operator can be carried out in two different ways. The first way is to use one-sided finite-difference to express the gradient of the potential as the difference between the potential $\Pi_{i,j}$
+There are many ways to discretize the gradient operator below we consider one approximation. A typical way is to use one-sided finite-difference to express the gradient of the potential as the difference between the potential $\Pi_{i,j}$
 at the face centroid between gridblock $i$ and $j$ and the potential at the center inside gridblock $i$, $\Phi_{w,i}$ (assuming pressure is constant inside a gridblock):
 \begin{equation}
 	\Big(\xi_{w}\frac{k_{rw}}{\mu_{w}}\tensor{K}\cdot \nabla\Phi_{w}\Big)\cdot\vec{A_{s}} \approx \xi_{w}\frac{k_{rw}}{\mu_{w}}A_{i,j}\tensor{K}_{i}\cdot\frac{(\Phi_{w,i}-\Pi_{i,j})\vec{c}_{i,j}}{|\vec{c}_{i,j}|^{2}}\cdot\vec{n}_{i,j} = \xi_{w}\frac{k_{rw}}{\mu_{w}}T_{i,j} (\Phi_{w,i}-\Pi_{i,j})
@@ -122,8 +122,8 @@ By making the following assumptions we can simplify the final discretization and
 \end{enumerate}
 Let the water flux from gridblock $i$ to gridblock $j$ be $v_{w, ij}$, writing both equations \ref{flux_i} and \ref{flux_j} using this:
 \begin{align}
-T_{i,j}v_{w, ij} = \xi_{w}\frac{k_{rw}}{\mu_{w}} (\Phi_{w,i}-\Pi_{i,j})\nonumber \\
-T_{j,i}v_{w, ij} = -\xi_{w}\frac{k_{rw}}{\mu_{w}}(\Phi_{w,j}-\Pi_{j,i})
+T_{i,j}^{-1}v_{w, ij} = \xi_{w}\frac{k_{rw}}{\mu_{w}} (\Phi_{w,i}-\Pi_{i,j})\nonumber \\
+T_{j,i}^{-1}v_{w, ij} = -\xi_{w}\frac{k_{rw}}{\mu_{w}}(\Phi_{w,j}-\Pi_{j,i})
 \label{fluxes}
 \end{align}
 Summing both equations in \ref{fluxes} and using condition \ref{potequal}:
@@ -140,32 +140,34 @@ Inserting the last equation for flux in \ref{surface} and plugging it back to ou
 \label{tpfa}
 \end{equation}
 The terms $T_{i,j}$ and $T_{j,i}$ are refered to as \textit{half-transmissibilities} since they are associated with a half face.
-See figure \ref{tpfa} for an illustration of this approximation scheme for a simple incompressible flow.
+See Figure \ref{tpfa-tikz} for an illustration of this approximation scheme for a simple incompressible flow.
 In carrying out the approximation in equations \ref{flux_i} and \ref{flux_j}, we have neglected the dot product between the permeability tensor $\tensor{K}$ and
 the gradient potential vector $\nabla\Phi_{w}$. This was done by assuming the gradient of the potential is along the face area vector $\vec{n}_{i,j}$. This is not always correct.
 Therefore, the TPFA scheme is not \textit{consistent}. Still, it is used as the standard spatial discretization technique in most industrial simulators. To avoid TPFA errors the simulation
 grid axes must be aligned along the permeability tensor. Grid orientation effects can distort simulation values and give incorrect results. Grids for which TPFA is appropriate are referred to as
 K-orthogonal grids and they satisfy the following condition:
 \begin{equation}
-	\vec{n}_{i,j}\cdot\tensor{K}\cdot\vec{n}_{i,k}, \ \ \forall j\neq k,
+	\vec{n}_{i,j}\cdot\tensor{K}\cdot\vec{n}_{i,k} = 0, \ \ \forall j\neq k,
 	\label{korthogonal}
 \end{equation}
 where $\vec{n}_{i,j}$ and $\vec{n}_{i,k}$ denote normal vectors to faces of cell number $i$.
 
-Furthermore, assuming the permeability tensor is diagonal ($K_{xx} = K_{x}, \ K_{yy} = K_{y},\ K_{zz} = K_{z}$) and aligned with the coordinate axes of the sysmte and 
-the mobility term ($\lambda_{w} = \xi_{w}\frac{k_{rw}}{\mu_{w}}$) will take same value for both gridblocks $i$ and $j$ at the face connecting them (see \ref{upwind} below).
-There remains the mobility term $\lambda_{w} = \xi_{w}\frac{k_{rw}}{\mu_{w}}$, which is usually evaluated on face centroid using upwind scheme (value from which flow is coming):
+To complete the discretization, we need to fix the value of the mobility term ($\lambda_{w,ij}=\xi_{w}\frac{k_{rw}}{\mu_{w}}$)   using upwdind scheme.
+Moreover, by assuming the permeability tensor is diagonal ($K_{xx} = K_{x}, \ K_{yy} = K_{y},\ K_{zz} = K_{z}$) and aligned with the coordinate axes of the system
+the TPFA will be a valid discretization technique.
+
+The mobility term $\lambda_{w} = \xi_{w}\frac{k_{rw}}{\mu_{w}}$, is usually evaluated on face centroid using upwind scheme (value from which flow is coming):
 \begin{equation}
 	\lambda_{w,ij} = 
 	\begin{cases}
-		\lambda_{w,i}, \ \text{if}\ T_{ij}\Phi_{j,i} \leq 0\\
-		\lambda_{w,j}, \ \text{if}\ T_{ij}\Phi_{j,i} > 0
+		\lambda_{w,i}, \ \text{if}\ T_{ij}\Delta\Phi_{j,i} \leq 0\\
+		\lambda_{w,j}, \ \text{if}\ T_{ij}\Delta\Phi_{j,i} > 0
 	\end{cases}
 	\label{upwind}
 \end{equation}
 
 For more details about discretizing the system of PDE equations in \ref{systempde}, the reader is referred to \cite{phdfernandes}, where the full
-peremeability tensor is expanded.
+peremeability tensor is expanded along with the dispersion tensor.
 
 \section{Temporal Discretization}
 The discretization of the time variable is of significant importance to the overall solution procedure.
@@ -230,7 +232,7 @@ Below is an example of discretizing the water equation from the system of PDEs i
 \end{table}%
 
 \section{Nonlinear Equations Solution Method}
-The flow model in figure \ref{models}, will usually result in a system of nonlinear PDEs. The discretization of this system of PDEs will
+The flow model in Figure \ref{models}, will usually result in a system of nonlinear PDEs. The discretization of this system of PDEs will
 produce a system of nonlinear algebraic equations. The standard method in reservoir simulation to solve this system of nonlinear
 algebraic equations is the Newton's method. For a system of $k$ nonlinear equations described by a vector valued continuously differentiable 
 function $F: \ \mathbb{R}^{k}\Rightarrow\mathbb{R}^{k}$, the Newton's method for finding zeros of the function can be described as:

@@ -172,7 +172,7 @@ when constructing the jacobian matrix. It basically contains information about w
 another gridblock variables. That is which gridblock is connected to which gridblock. This information depends on the
 way gridblocks are ordered and numbered. It also depends on whether the simulation model contains non-neighboring connections
 like wells or fractures. It also depends on the dimensionality of the simulation model. For an example of a jacobian matrix for a 
-simple one dimensional simulation grid with no unusual connections see figure \ref{jacobian}.
+simple one dimensional simulation grid with no unusual connections see Figure \ref{jacobian}.
 
 \begin{figure}[H]
 %\raggedright
@@ -202,10 +202,23 @@ In particular, the CPR preconditioner can be written as:
 \begin{equation}
 	M_{CPR}^{-1} = M^{-1}(I - AC(W^{T}AC)^{-1}W^{T}) + C(W^{T}AC)^{-1}W^{T}
 \end{equation}
-The decoupling techniques for CPR are summarized in table \ref{dectec} and expounded below sections.
+The decoupling techniques for CPR are summarized in Table \ref{dectec} and expounded below sections.
 
 \begin{table}[h!]
-\caption{List of pressure decoupling operators used in CPR algorithm.}
+  \caption[caption1; caption2]
+	{\tabular[t]{@{}l@{}l@{}}List of pressure decoupling operators used in CPR algorithm.\\ 
+	For a general decoupling operator $G$:\\
+	$GAx = \bar{A}x = \begin{pmatrix}
+		\bar{A}_{pp}&\bar{A}_{ps}\\
+		\bar{A}_{sp}&\bar{A}_{ss}\end{pmatrix}
+		\begin{pmatrix}
+		x_{p}\\
+		x_{s}\end{pmatrix}=
+		\begin{pmatrix}
+			\bar{b}_{p}\\
+			\bar{b}_{s}
+		\end{pmatrix}=
+		Gb$\endtabular}
 \label{dectec}
     \footnotesize
     \setlength\tabcolsep{3pt}

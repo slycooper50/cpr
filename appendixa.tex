@@ -1,5 +1,6 @@
 \chapter{Nomenclature}
 \label{nomenclature}
+\begin{adjustbox}{width=.95\textwidth,center}
 \noindent\fbox{%
 \hfill\parbox{\dimexpr\textwidth-15pt}{%
 \vspace{-\topskip}\small
@@ -49,7 +50,10 @@
 	  \entry{$C$}{A restriction operator used to extract the pressure subsystem \ref{cop}.}
 	  \entry{$W^{T}$}{$= C^{T}\cdot DIAG^{-1}(A)$.}
 	  \entry{$A_{lm}$}{Sublock of derivatives of $l$ equations with respect to $m$ variable.}
+	  \entry{$M_{CPR}^{-1}$}{\hspace{0.5cm}The CPR preconditioning operator.}
+	  \entry{$M^{-1}$}{The global preconditioner applied on combined system (usually \texttt{ILU(0)}).}
   \end{tabbing}
 \end{multicols}
 }%
-\hfill}
+\hfill}}
+\end{adjustbox}

@@ -47,7 +47,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{mitthesis}[\versiondate MIT Thesis Template (JHL)]
 
-\LoadClass[12pt,openright]{report}% [twoside] option can be issued in the .tex file; point size must be set here.
+\LoadClass[12pt,openany]{report}% [twoside] option can be issued in the .tex file; point size must be set here.
 
 \ExplSyntaxOn
   \str_const:Nn \ClassName {mitthesis}

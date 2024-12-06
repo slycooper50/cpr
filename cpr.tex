@@ -20,7 +20,7 @@
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\documentclass{mitthesis} %,fontset=libertine, fontset=newtx-sans-text, fontset=heros-stix2, fontset=stix2
+\documentclass[openany]{mitthesis} %,fontset=libertine, fontset=newtx-sans-text, fontset=heros-stix2, fontset=stix2
 %
 % option [twoside]		gives facing-page behavior for printing; omitting twoside will eliminate even-numbered blank pages.
 % option [lineno]	 	provides line numbers, as for editing
@@ -213,7 +213,6 @@
 
 %%%%%%%%%%%%%%  End preamble %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \begin{document}
 
 %%% edit the following commands to match your thesis %%%%%%%%%%
@@ -332,6 +331,7 @@
 
 %%% Appendicies of thesis  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\cleardoublepage\makeatletter\@openrightfalse\makeatother
 \appendix
 \include{appendixa}
 %\include{appendixb}

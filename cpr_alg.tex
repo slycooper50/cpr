@@ -18,7 +18,7 @@
         \begingroup
         \color{red}
 	    \textcolor{blue}{\ttfamily{\slash/ First Stage Preconditioner}}\\
-	    $\mathbf{r_{p} = C^{T}GR}$ \hspace{1cm}\tcp{Restric the residual to the prssure system.}
+	    $\mathbf{r_{p} = C^{T}GR}$ \hspace{1cm}\tcp{Restric the residual to the pressure system.}
 	    $\mathbf{\mathbf{A_{p} x_{p}} = \mathbf{r_{p}}}$ \hspace{0cm}\tcp{Solve using \texttt{GMRES} with Nested-Factorization.}
 	    \textcolor{black}{\texttt{call GMRES}} \hspace{2cm}$\textcolor{black}{\longleftarrow}$ \textcolor{NavyBlue}{\texttt{inner GMRES}}
             \hfill\\
@@ -62,7 +62,7 @@ The operator is formally written as:
 	\end{bmatrix}
 	\label{cop}
 \end{equation}
-Where the vector $\mathbf{e_{p}}$ is a unit vector of size $n_{eqn}$.
+Where the vector $\mathbf{e_{p}}$ is a unit vector of size $n_{eqn}$ (where pressure represents the final variable being ordered).
 The matrix $M$ represents a preconditoiner for the second-stage on the whole system combined. Usually \texttt{ILU(0)} is used.
 Both in \texttt{UTCOMPRS} and \texttt{Intersect IX} the decoupling operator used is $W^{T} = C^{T}DIAG^{-1}(A)$. Where $DIAG(A)$,
 is the diagonal blocks of the jacobian matrix, that is zeroing every other block not along the diagonal. The pressure matrix can be written
