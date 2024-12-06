@@ -37,10 +37,13 @@ for line in file_ilu:
 
 cpu_time_cpr = cpu_time_cpr.astype(np.float64)
 time_cpr = time_cpr.astype(np.float64)
+matbalerr_cpr = matbalerr_cpr.astype(np.float64)
+its_cpr = its_cpr.astype(np.float64)
+
 cpu_time_ilu = cpu_time_ilu.astype(np.float64)
 time_ilu = time_ilu.astype(np.float64)
-matbalerr_cpr = matbalerr_cpr.astype(np.float64)
 matbalerr_ilu = matbalerr_ilu.astype(np.float64)
+its_ilu = its_ilu.astype(np.float64)
 
 ## Fig 1 ##
 fig, ax = plt.subplots()
@@ -59,7 +62,7 @@ plt.gcf().set_size_inches(20, 10)
 ax.legend()
 plt.legend(loc=2, prop={'size': 20})
 plt.savefig('its_time.pdf', dpi=400, backend='pgf')
-plt.show()
+#plt.show()
 
 ## Fig 2 ##
 fig, ax = plt.subplots()
@@ -78,7 +81,7 @@ plt.gcf().set_size_inches(20, 10)
 ax.legend()
 plt.legend(loc=2, prop={'size': 20})
 plt.savefig('cpu_time.pdf', dpi=400, backend='pgf')
-plt.show()
+#plt.show()
 
 ### Fig 3 ##
 fig, ax = plt.subplots()
@@ -97,4 +100,4 @@ plt.gcf().set_size_inches(20, 10)
 ax.legend()
 plt.legend(loc=2, prop={'size': 20})
 plt.savefig('matbalerr_time.pdf', dpi=400, backend='pgf')
-plt.show()
+#plt.show()

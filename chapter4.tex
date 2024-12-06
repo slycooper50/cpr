@@ -4,10 +4,27 @@ The first three cases were originally presented in \cite{fernandes}, in an Adapt
 The first case (\texttt{Case 1}) is a three-phase model that involves gas injection and aimed 
 at testing the effects of dispersion. The second case (\texttt{Case 2}) is a gas-flooding model in 
 a heterogeneous reservoir. The third case (\texttt{Case 3}) is a four-phase $CO_{2}$ flooding model 
-in an areal heterogeneous reservoir. The fourth case (\texttt{Case 4}) is an extension of the third case to 3D. 
+in an 3D field scaled model. The fourth case (\texttt{Case 4}) is a waterflood in a 3D field scaled model with fractures
+modeled with embedded discrete fracture model. The fifth case (\texttt{Case 5}) is based on \texttt{Case 4} but with gas flooding
+instead of water. The last \texttt{Case 6} is a CO$_{2}$ miscible flooding in a 2D heterogeneous model that displays viscous fingering behavior. 
+
 These cases are presented below and compared with CPR preconditioner against
 the standard solver in \texttt{UTCOMPRS} which is a Krylov based \texttt{GMRES} with \texttt{ILU(0)} as a global
 preconditioner. 
+
+All results below show a faster performance of \texttt{CPR} preconditioner combined with \texttt{AMG} 
+over \texttt{GMRES} combined with \texttt{ILU(0)}. The linear iterations of \texttt{FGMRES} are considerably 
+reduced for all cases. The viscous fingering case (\ref{viscous}) shows the most drastic increase in performance.
+\newline
+
+The results for all cases show three comparison plots:
+\begin{itemize}
+	\item CPU time against simulation time (How long it takes to run the simulation).
+	\item Number of linear iterations of the outer solver \texttt{GMRES} or \texttt{FGMRES} against simulation time.
+	\item Material balance error percentage against simulatoin time.
+\end{itemize}
+
+\clearpage
 
 \section{Case 1}
 The details of the reservoir being simulated are shown in Table \ref{case1}. 
@@ -516,7 +533,7 @@ could not finish the simulation in less than a day for the ($320\times320$) scen
 \begin{table}[h!]
 \begin{adjustbox}{width=0.5\textwidth}
     \begin{threeparttable}
-    \caption{\textbf{Case 4 Reservoir Parameters\supercite{phdfernandes}.}}
+    \caption{\textbf{Case 6 Reservoir Parameters.}}
     \label{viscous}
         \begin{tabular}{l r }
             \toprule
@@ -595,7 +612,7 @@ could not finish the simulation in less than a day for the ($320\times320$) scen
 \begin{subfigure}[b]{\textwidth}
    \includegraphics[width=1\linewidth]{figures/viscous/320x320/cpu_time.pdf}
    \caption{}
-   \label{viscouse320_cpu}
+   \label{viscous320_cpu}
 \end{subfigure}
 
 \begin{subfigure}[b]{\textwidth}
@@ -626,7 +643,7 @@ could not finish the simulation in less than a day for the ($320\times320$) scen
 \begin{subfigure}[b]{\textwidth}
    \includegraphics[width=1\linewidth]{figures/viscous/80x80/cpu_time.pdf}
    \caption{}
-   \label{viscouse80_cpu}
+   \label{viscous80_cpu}
 \end{subfigure}
 
 \begin{subfigure}[b]{\textwidth}
@@ -657,7 +674,7 @@ could not finish the simulation in less than a day for the ($320\times320$) scen
 \begin{subfigure}[b]{\textwidth}
    \includegraphics[width=1\linewidth]{figures/viscous/20x20/cpu_time.pdf}
    \caption{}
-   \label{viscouse20_cpu}
+   \label{viscous20_cpu}
 \end{subfigure}
 
 \begin{subfigure}[b]{\textwidth}
